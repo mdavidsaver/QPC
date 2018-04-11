@@ -1,0 +1,20 @@
+record(ai,"$(P)$(VS):Pressure") {
+	field(DESC,"Pressure Readout Station $(STN)")
+	field(DTYP,"asyn Televac")
+	field(INP,"@asyn($(PORT) $(ADDR))GET_PRESSURE $(STN)")
+#	field(FLNK,"$(P)$(VS):RelayState")
+	field(PREC,"2")
+	field(EGU,"Torr")
+	field(HIHI,"1.0e+03")
+	field(HHSV,"MAJOR")
+
+}
+record(bi,"$(P)$(VS):RelayState") {
+	field(DESC,"Relay Status Station $(STN)")
+	field(DTYP,"asyn Televac")
+	field(INP,"@asyn($(PORT) $(ADDR))GET_RELAYSTATUS $(STN)")
+	field(ZNAM,"OFF")
+	field(ONAM,"ON")
+	field(ZSV,"MAJOR")
+}
+

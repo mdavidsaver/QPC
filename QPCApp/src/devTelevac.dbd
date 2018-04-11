@@ -1,0 +1,8 @@
+device(ai,        INST_IO, devAiTelevac,    "asyn Televac")
+device(bi,        INST_IO, devBiTelevac,    "asyn Televac")
+
+include "asyn.dbd"
+
+registrar(drvAsynIPPortRegisterCommands)
+registrar(drvAsynSerialPortRegisterCommands)
+
