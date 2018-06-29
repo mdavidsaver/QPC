@@ -1,4 +1,4 @@
-# digitelMpcIonpSps.template
+# digitelQpcIonpSps.template
 # Template database to set Ion pump setpoints on a digitel MPC
 # This template should be used AFTER the ion pump
 # records have been loaded with default values

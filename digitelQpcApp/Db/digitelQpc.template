@@ -1,4 +1,4 @@
-# digitelMpc.db
+# digitelQpc.db
 #% macro, __doc__, Template database for digitel MPC - Controller
 # Pete Owens - 30/3/04
 #
@@ -15,7 +15,7 @@ record(stringin, "$(device):MODEL")
 {
     field(DESC, "Model Number")
     field(DTYP, "stream")
-    field(INP,  "@digitelMpc.proto model($(unit=01)) $(port)")
+    field(INP,  "@digitelQpc.proto model($(unit=01)) $(port)")
     field(SCAN, "10 second")
 }
 ################################################################################
@@ -27,7 +27,7 @@ record(stringin, "$(device):VERSION")
 {
     field(DESC, "Firmware Revision")
     field(DTYP, "stream")
-    field(INP,  "@digitelMpc.proto version($(unit=01)) $(port)")
+    field(INP,  "@digitelQpc.proto version($(unit=01)) $(port)")
     field(SCAN, "10 second")
 }
 ################################################################################
@@ -39,7 +39,7 @@ record(longin, "$(device):V")
 {
     field(DESC, "Line Voltage")
     field(DTYP, "stream")
-    field(INP,  "@digitelMpc.proto linev($(unit=01)) $(port)")
+    field(INP,  "@digitelQpc.proto linev($(unit=01)) $(port)")
 #    field(FLNK, "$(device):OUTV")
     field(SCAN, "10 second")
     field(EGU,  "V")
@@ -61,7 +61,7 @@ record(ao, "$(device):OUTV")
 {
     field(DESC, "Line Voltage")
     field(DTYP, "stream")
-    field(OUT,  "@digitelMpc.proto setlinev($(unit=01)) $(port)")
+    field(OUT,  "@digitelQpc.proto setlinev($(unit=01)) $(port)")
 #    field(OMSL, "closed_loop")
 #    field(DOL,  "$(device):V")
     field(DOL,  "240")
@@ -81,7 +81,7 @@ record(longin, "$(device):F")
 {
     field(DESC, "Line Frequency")
     field(DTYP, "stream")
-    field(INP,  "@digitelMpc.proto linef($(unit=01)) $(port)")
+    field(INP,  "@digitelQpc.proto linef($(unit=01)) $(port)")
     field(SCAN, "10 second")
     field(EGU,  "Hz")
     field(LOPR, "50")
@@ -104,7 +104,7 @@ record(bo, "$(device):SETFAN")
 {
     field(DESC, "Fan")
     field(DTYP, "stream")
-    field(OUT,  "@digitelMpc.proto fan($(unit=01)) $(port)")
+    field(OUT,  "@digitelQpc.proto fan($(unit=01)) $(port)")
     field(ZNAM, "Off")
     field(ONAM, "On")
     field(DOL,  "1")
@@ -117,7 +117,7 @@ record(bo, "$(device):SETAUTOST")
 {
     field(DESC, "Auto Restart")
     field(DTYP, "stream")
-    field(OUT,  "@digitelMpc.proto setautost($(unit=01)) $(port)")
+    field(OUT,  "@digitelQpc.proto setautost($(unit=01)) $(port)")
     field(ZNAM, "No")
     field(ONAM, "Yes")
     field(DOL,  "0")
@@ -130,7 +130,7 @@ record(bi, "$(device):AUTOST")
 {
     field(DESC, "Auto Restart")
     field(DTYP, "stream")
-    field(INP,  "@digitelMpc.proto autost($(unit=01)) $(port)")
+    field(INP,  "@digitelQpc.proto autost($(unit=01)) $(port)")
     field(SCAN, "10 second")
     field(ZNAM, "No")
     field(ONAM, "Yes")
@@ -145,7 +145,7 @@ record(bo, "$(device):RESET")
 {
     field(DESC, "Reset Software")
     field(DTYP, "stream")
-    field(OUT,  "@digitelMpc.proto reset($(unit=01)) $(port)")
+    field(OUT,  "@digitelQpc.proto reset($(unit=01)) $(port)")
     field(ZNAM, "Reset")
     field(ONAM, "Reset")
 }
@@ -155,7 +155,7 @@ record(stringin, "$(device):DEBUG")
 {
     field(DESC, "Generic command")
     field(DTYP, "stream")
-    field(INP,  "@digitelMpc.proto debug($(unit=01)) $(port)")
+    field(INP,  "@digitelQpc.proto debug($(unit=01)) $(port)")
     field(SCAN, "Passive")
 }
 
