@@ -8,7 +8,7 @@ DIRS := $(DIRS) $(filter-out $(DIRS), configure)
 #DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *app))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard iocBoot))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard iocboot))
-DIRS += digitelMpcApp
+DIRS += digitelQpcApp
 
 ## Uncomment the following to build the simulation and example apps 
 ## (NB make sure configure/RELEASE is updated too)
