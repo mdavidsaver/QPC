@@ -99,29 +99,6 @@ record(ai, "$(device):I") {
     field(PREC, "1")
 }
 
-################################################################################
-# Get Line Voltage - and inform the firmware
-#
-#% controldesk Line Voltage readback
-#
-record(longin, "$(device):V")
-{
-    field(DESC, "Line Voltage")
-    field(DTYP, "stream")
-    field(INP,  "@digitelQpc.proto linev($(unit=01),$(pump)) $(port)")
-    field(SCAN, "10 second")
-    field(EGU,  "V")
-    field(LOPR, "160")
-    field(HOPR, "240")
-    field(HIHI, "260")
-    field(HIGH, "241")
-    field(LOW,  "239")
-    field(LOLO, "220")
-    field(HHSV, "MAJOR")
-    field(HSV,  "MINOR")
-    field(LSV,  "MINOR")
-    field(LLSV, "MAJOR")
-}
 
 ################################################################################
 # Read pump pressure
