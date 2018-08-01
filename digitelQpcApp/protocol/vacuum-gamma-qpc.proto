@@ -1,0 +1,164 @@
+locktimeout = 5000;
+terminator   = CR;
+replytimeout = 1000;
+readtimeout  = 1000;
+extrainput   = Ignore;
+
+
+
+#OutTerminator = CR;
+##InTerminator = ">";
+#ReadTimeout = 2000;
+#ReplyTimeout = 2000;
+
+# Command 0A Read Current
+getCurrent {
+	out "~ \$1 0A \$2 00";
+    in "\$1 OK %*2x %g %*{AMPS|Amps}";
+	ExtraInput = Ignore;
+}
+
+# Command 0B Read Pressure
+getPressure {
+	out "~ \$1 0B \$2 00";
+	in "\$1 OK %*2c %g";
+	ExtraInput = Ignore;
+}
+
+# Command 0C Read Voltage
+getVoltage {
+	out "~ \$1 0C \$2 00";
+	in "\$1 OK %f";
+	ExtraInput = Ignore;
+}
+
+# Command 0D Get Supply Status
+# New command has the format cmd 0D supply,option
+# If you send cmd 0D \$1,00 (Currently 00 is the only option)
+# The return format will be XX where XX is one of:
+# 00 - pump standby
+# 01 - pump starting
+# 02 - pump running
+# 03 - pump cooldown
+# 04 - pump error
+# Otherwise this protocol sends back a string as is done here
+getStatus {
+	out "~ \$1 0D \$2 00";
+	in "\$1 OK %2c";
+	ExtraInput = Ignore;
+}
+
+# Command 61 Is High Voltage On - Indicates if the high voltage is on for 
+# the specified pump
+# This is likely a legacy command as it does not exist in the revision G
+# manual. I think that it is replaced by the 0D command above.
+isEnabled {
+	out "~ \$1 61 \$2 00";
+	in "\$1 OK %s";
+	ExtraInput = Ignore;
+}
+
+# Command 37 Start Pump - Enables high voltage of specified supply
+enable {
+	out "~ \$1 37 \$2 00";
+	ExtraInput = Ignore;
+}
+
+# Command 38 Stop Pump - Disables high voltage of specified supply
+disable {
+	out "~ \$1 38 \$2 00";
+	ExtraInput = Ignore;
+}
+
+# Command 01 Get Model - Returns the pump controller model (QPC,MPC,etc)
+getModel {
+	out "~ \$1 01 00";
+	in "\$1 OK %*2c DIGITEL %s %0<sum8>";
+	ExtraInput = Ignore;
+}
+
+# Command 02 Version - Returns the firmware version of the pump controller
+getFirmware {
+	out "~ \$1 02 00";
+    in "\$1 OK %*2c SW Version %s %0<sum8>";
+	ExtraInput = Ignore;
+}
+
+# Uses the command 0B above but returns only the pressure units selected
+# This function is used to initialize setPressUnit function below
+getPressureUnit {
+	out "~ \$1 0B \$2 00";
+	in "\$1 OK %*2c %*g %{TORR|MBAR|PASCAL}";
+	ExtraInput = Ignore;
+}
+
+# Command 0E Set Pressure Units - Allows remote control over pressure units
+setPressUnit {
+	out "~ \$1 0E %{T|M|P} 00";
+
+	@init { getPressureUnit; }	
+	ExtraInput = Ignore;
+}
+
+# Command 11 Get pump Size - Reads pump size in liters/second
+getPumpSize {
+	out "~ \$1 11 \$2 00";
+	in "%*2c OK %*2c %d L/S";
+	ExtraInput = Ignore;
+}
+	
+# Command 12 Set pump Size - Sets pump size in liters/second
+setPumpSize {
+	out "~ \$1 12 \$2,%s 00";
+	in "%*6c";
+
+	@init { getPumpSize; }	
+	ExtraInput = Ignore;
+}
+
+# For the set points here we just get the set point on/off pressure and output
+# relay/digital out status
+# NOTE:
+# We will use the new 3B command which has replaced the 3C and 3D commands
+# get the on pressure set point
+getOnPressSpt {
+	out "~ \$1 3B \$2 00";
+    in "\$1 OK %*2x %*i, %*i, %*i,%*g,%g,%*i %0<sum8>";
+	ExtraInput = Ignore;	
+}
+
+# get off pressure set point
+getOffPressSpt {
+	out "~ \$1 3B \$2 00";
+	# in "%*21c%g";
+    in "\$1 OK %*2x %*i, %*i, %*i,%g,%*g,%*i %0<sum8>";
+    ExtraInput = Ignore;
+    }
+
+getSptStatus {
+	out "~ \$1 3B \$2 00";
+    in "\$1 OK %*2x %*i, %*i, %*i,%*g,%*g,%i %0<sum8>";
+	ExtraInput = Ignore;	
+}
+
+##
+# Args: 1 => Unit, 2 => Supply (== setpoint number), 3 => Setpoint pressure, 4 => System name, 5 => Pump name
+# Predicate: Supply number === Setpoint number
+#
+setOnPress {
+	out "~ \$1 3B \$2,1,\$2,%E,%(\$4\$5:SPOFF.VAL)E 00";
+	in "%(\$4\$5:SPMESSAGE.VAL)2c";
+	in "00*[^>]";
+	
+	@mismatch { in "ER 08 *ERROR: %(\$4\$5:SPMESSAGE.VAL)36c";}
+}
+
+##
+# Args: 1 => Unit, 2 => Supply (== setpoint number), 3 => Setpoint pressure, 4 => System name, 5 => Pump name
+# Predicate: Supply number === Setpoint number
+#
+setOffPress {
+	out "~ \$1 3B \$2,1,\$2,%(\$4\$5:SPON.VAL)E,%E 00";
+	ExtraInput = Ignore;	
+}
+

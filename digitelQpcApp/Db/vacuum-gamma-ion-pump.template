@@ -1,0 +1,261 @@
+# This database is good for a single pump supply on a QPC
+######
+# Unless the setpoints are loaded sperately we can have only 1 per pump supply
+######
+# SYSTEM - PV prefix or system name
+# SPT - Set point number for this pump
+# SPLY - Which pump supply number
+record(ai, "$(SYSTEM)$(PMP):I")
+{
+	field(DESC, "Reads Channel Current")
+	field(SCAN, "5 second")
+	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getCurrent($(unit),$(SPLY)) $(port)")
+}
+
+record(ai, "$(SYSTEM)$(PMP):P")
+{
+	field(DESC, "Reads Channel Current")
+	field(SCAN, "5 second")
+	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getPressure($(unit),$(SPLY)) $(port)")
+}
+
+record(ai, "$(SYSTEM)$(PMP):V")
+{
+	field(DESC, "Reads Channel Current")
+	field(SCAN, "5 second")
+	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getVoltage($(unit),$(SPLY)) $(port)")
+}
+
+record(stringin, "$(SYSTEM)$(PMP):STA")
+{
+	field(DESC, "Reads Channel Current")
+	field(SCAN, "5 second")
+	field(PINI, "NO")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getStatus($(unit),$(SPLY)) $(port)")
+}
+
+record(stringin, "$(SYSTEM)$(PMP):ENABLED")
+{
+	field(DESC, "Reads channel HV status.")
+	field(SCAN, "5 second")
+	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto isEnabled($(unit),$(SPLY)) $(port)")
+}
+
+record(bo, "$(SYSTEM)$(PMP):ENABLE")
+{
+	field(DESC, "Enable ion pump HV")
+	field(PINI, "NO")
+	field(VAL, "1") # Dummy Value
+	field(DTYP, "stream")
+	field(OUT, "@vacuum-gamma-qpc.proto enable($(unit),$(SPLY)) $(port)")
+}
+
+record(bo, "$(SYSTEM)$(PMP):DISABLE")
+{
+	field(DESC, "Disable ion pump HV")
+	field(PINI, "NO")
+	field(VAL, "1") # Dummy Value
+	field(DTYP, "stream")
+	field(OUT, "@vacuum-gamma-qpc.proto disable($(unit),$(SPLY)) $(port)")
+}
+
+record(stringin, "$(SYSTEM)$(PMP):MODEL")
+{
+	field(DESC, "Reads Device Model")
+	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getModel($(unit)) $(port)")
+}
+
+record(stringin, "$(SYSTEM)$(PMP):FIRMWARE")
+{
+	field(DESC, "Reads Device Firmware")
+	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getFirmware($(unit)) $(port)")
+}
+
+record(mbbo,"$(SYSTEM)$(PMP):SETPUNITS") {
+	field(DESC,"Set Pressure Units for pump $(SPLY)")
+	field(NOBT,"2")
+ 	field(DTYP, "stream")
+	field(OUT,"@vacuum-gamma-qpc.proto setPressUnit($(unit),$(SPLY)) $(port)")
+	field(ZRVL,"0")
+	field(ONVL,"1")
+	field(TWVL,"2")
+	field(ZRST,"TORR")
+	field(ONST,"MBAR")
+	field(TWST,"PASCAL")
+}
+record(mbbi,"$(SYSTEM)$(PMP):PUNITS")
+    {
+    field(DESC, "Pressure Units Readback")
+    field(INP, "$(SYSTEM)$(PMP):SETPUNITS.VAL CP NMS")
+	field(ZRVL,"0")
+	field(ONVL,"1")
+	field(TWVL,"2")
+	field(ZRST,"TORR")
+	field(ONST,"MBAR")
+	field(TWST,"PASCAL")
+    }
+###################################################################
+# Pump size
+record(ai, "$(SYSTEM)$(PMP):PUMPSIZE")
+    {
+	field(DESC, "Reads Pump Size for pump $(SPLY)")
+	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getPumpSize($(unit),$(SPLY)) $(port)")
+	field(EGU,"L/S")
+    }
+record(ao, "$(SYSTEM)$(PMP):SETPUMPSIZE") {
+	field(DESC, "Sets Pump Size (L/S) for Pump $(SPLY)")
+	field(DTYP, "stream")
+	field(OUT, "@vacuum-gamma-qpc.proto setPumpSize($(unit),$(SPLY)) $(port)")
+	field(OMSL, "supervisory")
+	field(EGU,"L/S")
+	field(DRVH,"1200")
+	field(DRVL,"30")
+}
+###################################################################
+# Pump set point readbacks for on/off pressures and relay/digital out status
+# These records are really only good for 1 set point but the database is good
+# for 1 of the controllers pump supplies.
+record(ai, "$(SYSTEM)$(PMP):SPON"){
+	field(DESC, "Reads Pump on press for pump $(SPLY)")
+	field(PINI, "YES")
+	field(SCAN, "5 second")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getOnPressSpt($(unit),$(SPLY)) $(port)")
+    field(PREC,"1")
+}
+record(ai, "$(SYSTEM)$(PMP):SPOFF"){
+	field(DESC, "Reads Pump off press for pump")
+	field(PINI, "YES")
+	field(SCAN, "5 second")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getOffPressSpt($(unit),$(SPLY)) $(port)")
+    field(PREC,"1")
+}
+record(bi, "$(SYSTEM)$(PMP):SPSTA") {
+	field(DESC, "Read Spt$(SPT) status for pump")
+	field(PINI, "YES")
+	field(SCAN, "5 second")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getSptStatus($(unit),$(SPLY)) $(port)")
+	field(OSV, "MAJOR")
+	field(ZNAM, "Setpoint $(SPT) Off")
+	field(ONAM, "Setpoint $(SPT) On")
+}
+###################################################################
+# Pump set point on pressure set
+# CAUTION: Setting this to a value greater than the off pressure will
+#	   cause the off pressure to be readjusted (by the pump firmware)
+#	   so that the off pressure will be 20% greater than the on pressure
+#	   The same does not hold true for setting the off pressure but insetad
+#	   the controller will simply return an error.
+record(ao, "$(SYSTEM)$(PMP):SETSPON") {
+	field(DESC, "Set on press for Spt$(SPT)")
+	field(DTYP, "stream")
+	field(OUT, "@vacuum-gamma-qpc.proto setOnPress($(unit),$(SPLY),$(SPT),$(SYSTEM),$(PMP)) $(port)")
+	field(OMSL, "supervisory")
+	field(DRVH,"1.0E-4")
+	field(DRVL,"1.0e-11")
+    field(PREC,"1")
+    field(FLNK,"$(SYSTEM)$(PMP):SPMESSAGE.PROC PP NMS")
+}
+############################################################
+# Set the off pressure
+# This is a bit more tricky than setting on pressure in order to avoid the return 
+# error message.
+# Must be set between 1.0E-4 and 1.0E-11
+# Must be at least 20% > than on pressure
+# INPA - Reserved for user input of desired off pressure
+############################################################
+record(calcout,"$(SYSTEM)$(PMP):SETSPOFF") {
+        field(DESC,"Set off press")
+        field(CALC,"(A>=(B+B*0.2))?((A<D)&&(A>C))?A:2:1")
+        field(INPB,"$(SYSTEM)$(PMP):SPON.VAL NPP NMS")
+        field(INPC,"$(SYSTEM)$(PMP):SENDOFFP.DRVL NPP NMS")
+        field(INPD,"$(SYSTEM)$(PMP):SENDOFFP.DRVH NPP NMS")
+        field(INPE,"$(SYSTEM)$(PMP):SPOFF.VAL NPP NMS")
+        field(OUT,"$(SYSTEM)$(PMP):CHECKOFFP.PROC PP NMS")
+        field(OOPT,"Every Time")
+        field(DOPT,"Use CALC")
+        field(PREC,"1")
+}
+# For the record above:
+# A means a pressure at least 20% > than on pressure and within range
+# 2 means the entered off pressure is not within the valid range
+# 1 means the entered off pressure is not 20% > than on pressure
+######################################################################
+# Check for a value between zero and one and send to device only if true
+# otherwise device will report an error. This allows better control over sending
+# the message to the QPC to try and not generate an error.
+######################################################################
+record(calcout,"$(SYSTEM)$(PMP):CHECKOFFP") {
+        field(DESC,"Set off press for Spt$(SPT) Pump $(SPLY)")
+        field(CALC,"(A<1&&A>0)?A:0")
+        field(INPA,"$(SYSTEM)$(PMP):SETSPOFF.VAL NPP NMS")
+        field(OUT,"$(SYSTEM)$(PMP):SENDOFFP.VAL PP NMS")
+        field(OOPT,"When Non-zero")
+        field(DOPT,"Use CALC")
+        field(FLNK,"$(SYSTEM)$(PMP):SPOFFMSG.PROC PP NMS")
+}
+# Sends a valid off pressure command
+record(ao, "$(SYSTEM)$(PMP):SENDOFFP") {
+	field(DESC, "send press for Spt$(SPT) Pump $(SPLY)")
+	field(DTYP, "stream")
+	field(OUT, "@vacuum-gamma-qpc.proto setOffPress($(unit),$(SPLY),$(SPT),$(SYSTEM),$(PMP)) $(port)")
+	field(OMSL, "supervisory")
+	field(DRVH,"1.0E-4")
+	field(DRVL,"1.0e-11")
+}
+# Create a off set point range message for user display and forward it to
+# the actual message generator (SPOPMSG.CC)
+record(scalcout,"$(SYSTEM)$(PMP):SPOFFMSG") {
+        field(DESC,"Generates messages")
+        field(CALC,"A=2?AA+$P('%.1e',E)+BB+$P('%.1e',F):A")
+        field(INPA,"$(SYSTEM)$(PMP):SETSPOFF.VAL NPP NMS")
+        field(INPB,"$(SYSTEM)$(PMP):CHECKOFFP.VAL NPP NMS")
+        field(INPE,"$(SYSTEM)$(PMP):SENDOFFP.DRVH NPP NMS")
+        field(INPF,"$(SYSTEM)$(PMP):SENDOFFP.DRVL NPP NMS")
+        field(AA,"Off Spt must be < ")
+        field(BB," & > ")
+        field(OUT,"$(SYSTEM)$(PMP):SPOPMSG.CC PP NMS")
+        field(OOPT,"Every Time")
+}
+# Message to user about sending off set point pressure value
+# Probelm is with the CC message, in order to print values of E & F the calc
+# gets too long
+record(scalcout,"$(SYSTEM)$(PMP):SPOPMSG") {
+        field(DESC,"Generates messages")
+        field(CALC,"A=1?BB:A=2?CC:B#0?AA:DD")
+        field(INPA,"$(SYSTEM)$(PMP):SETSPOFF.VAL NPP NMS")
+        field(INPB,"$(SYSTEM)$(PMP):CHECKOFFP.VAL NPP NMS")
+        field(AA,"Off Setpoint Sent")
+        field(BB,"Off Spt must be 20% > than On")
+        field(DD," ")
+        field(OUT,"$(SYSTEM)$(PMP):SPOFFMSG.VAL PP NMS")
+        field(OOPT,"Every Time")
+}
+record(stringin, "$(SYSTEM)$(PMP):SPOFFMESSAGE")
+{
+	field(DESC, "Display Off Spt Mesg")
+	field(INP, " ")
+}
+record(stringin, "$(SYSTEM)$(PMP):SPMESSAGE")
+{
+	field(DESC, "Display Spt Error Mesg")
+	field(INP, " ")
+}
+
