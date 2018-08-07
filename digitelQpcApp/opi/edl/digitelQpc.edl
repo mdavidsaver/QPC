@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 521
-y 135
+x 2273
+y 821
 w 240
 h 246
 font "arial-medium-r-16.0"
@@ -30,7 +30,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 0
 y 0
 w 240
@@ -83,30 +83,11 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 16
-y 180
-w 24
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Fan"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 0
+release 1
 x 16
 y 64
 w 40
-h 16
+h 32
 font "arial-medium-r-14.0"
 fgColor index 14
 bgColor index 0
@@ -122,52 +103,16 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 16
-y 92
-w 208
-h 22
-controlPv "$(device):VERSION"
+x 112
+y 96
+w 112
+h 24
+controlPv "$(device):FIRMWARE"
 fgColor index 18
 fgAlarm
 bgColor index 10
 font "arial-bold-r-14.0"
 fontAlign "right"
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 112
-y 120
-w 56
-h 22
-controlPv "$(device):V"
-fgColor index 18
-fgAlarm
-bgColor index 10
-font "arial-bold-r-14.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 0
-x 16
-y 124
-w 27
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Line"
-}
 endObjectProperties
 
 # (Textupdate)
@@ -177,16 +122,33 @@ major 10
 minor 0
 release 0
 x 168
-y 120
+y 128
 w 56
 h 22
-controlPv "$(device):F"
-precision 2
+controlPv "$(device):PUNITS"
 fgColor index 18
-fgAlarm
 bgColor index 10
 font "arial-bold-r-14.0"
 fontAlign "right"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 16
+y 128
+w 104
+h 32
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Pressure Units"
+}
 endObjectProperties
 
 # (Textupdate)
@@ -198,7 +160,7 @@ release 0
 x 112
 y 64
 w 112
-h 22
+h 32
 controlPv "$(device):MODEL"
 fgColor index 18
 fgAlarm
@@ -212,60 +174,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 16
-y 152
-w 86
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Auto Re-start"
-}
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 112
-y 148
-w 112
-h 22
-controlPv "$(device):AUTOST"
-fgColor index 18
-fgAlarm
-bgColor index 10
-font "arial-bold-r-14.0"
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 112
-y 176
-w 112
-h 22
-controlPv "$(device):SETFAN"
-fgColor index 18
-fgAlarm
-bgColor index 10
-font "arial-bold-r-14.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 0
+release 1
 x 8
 y 40
 w 48
@@ -293,26 +202,22 @@ lineColor index 14
 fillColor index 3
 endObjectProperties
 
-# (Message Button)
-object activeMessageButtonClass
+# (Static Text)
+object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
-x 8
-y 214
-w 108
-h 24
-fgColor index 25
-onColor index 4
-offColor index 3
-topShadowColor index 1
-botShadowColor index 11
-controlPv "$(device):RESET"
-pressValue "Reset"
-onLabel "Reset"
-offLabel "Reset"
-3d
+minor 1
+release 1
+x 16
+y 96
+w 64
+h 32
 font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Firmware"
+}
 endObjectProperties
 

@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 3343
-y 576
+x 2556
+y 514
 w 328
-h 468
+h 544
 font "arial-medium-r-16.0"
 ctlFont "arial-bold-r-16.0"
 btnFont "arial-medium-r-16.0"
@@ -34,7 +34,7 @@ release 0
 x 8
 y 48
 w 312
-h 348
+h 416
 lineColor index 14
 fill
 fillColor index 5
@@ -99,26 +99,6 @@ value {
 autoSize
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 16
-y 152
-w 50
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Voltage"
-}
-autoSize
-endObjectProperties
-
 # (Textupdate)
 object TextupdateClass
 beginObjectProperties
@@ -148,74 +128,10 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 96
-y 148
-w 72
-h 22
-controlPv "$(device):V"
-fgColor index 16
-fgAlarm
-bgColor index 12
-fill
-font "arial-bold-r-14.0"
-fontAlign "center"
-lineWidth 2
-lineAlarm
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 16
-y 179
-w 48
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Current"
-}
-autoSize
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 96
-y 176
-w 72
-h 22
-controlPv "$(device):I"
-displayMode "engineer"
-precision 1
-fgColor index 16
-fgAlarm
-bgColor index 12
-fill
-font "arial-bold-r-14.0"
-fontAlign "center"
-lineWidth 2
-lineAlarm
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 96
-y 92
-w 216
-h 22
+x 128
+y 96
+w 176
+h 24
 controlPv "$(device):STA"
 fgColor index 18
 fgAlarm
@@ -229,10 +145,10 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 96
+x 128
 y 120
-w 216
-h 22
+w 120
+h 24
 controlPv "$(device):ERR"
 fgColor index 18
 fgAlarm
@@ -258,31 +174,6 @@ value {
   "Error Code"
 }
 autoSize
-endObjectProperties
-
-# (Bar)
-object activeBarClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 172
-y 64
-w 140
-h 22
-indicatorColor index 16
-indicatorAlarm
-fgColor index 14
-bgColor index 10
-indicatorPv "$(device):PLOG"
-font "arial-bold-r-16.0"
-labelTicks "10"
-majorTicks "1"
-minorTicks "2"
-border
-limitsFromDb
-precision "0"
-scaleFormat "FFloat"
 endObjectProperties
 
 # (Group)
@@ -344,7 +235,7 @@ release 0
 x 208
 y 240
 w 104
-h 148
+h 216
 lineColor index 14
 fill
 fillColor index 3
@@ -357,9 +248,9 @@ major 4
 minor 0
 release 0
 x 16
-y 240
+y 248
 w 88
-h 148
+h 208
 lineColor index 14
 fill
 fillColor index 3
@@ -374,7 +265,7 @@ release 0
 x 104
 y 240
 w 104
-h 148
+h 216
 lineColor index 14
 fill
 fillColor index 3
@@ -467,7 +358,7 @@ x 112
 y 272
 w 88
 h 22
-controlPv "$(device):SIZE"
+controlPv "$(device):PUMPSIZE"
 fgColor index 16
 fgAlarm
 bgColor index 12
@@ -488,7 +379,7 @@ x 216
 y 272
 w 88
 h 22
-controlPv "$(device):SETSIZE"
+controlPv "$(device):SETPUMPSIZE"
 font "arial-bold-r-14.0"
 fontAlign "center"
 fgColor index 25
@@ -496,7 +387,7 @@ bgColor index 1
 editable
 motifWidget
 limitsFromDb
-nullPv "$(device):SETSIZE"
+nullPv "$(device):SETPUMPSIZE"
 nullColor index 18
 nullCondition "disabled"
 fastUpdate
@@ -507,133 +398,6 @@ objType "controls"
 noExecuteClipMask
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 24
-y 360
-w 78
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Setpoint Off"
-}
-autoSize
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 112
-y 300
-w 88
-h 22
-controlPv "$(device):CAL"
-fgColor index 16
-fgAlarm
-bgColor index 12
-fill
-font "arial-bold-r-14.0"
-fontAlign "center"
-lineWidth 2
-lineAlarm
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 24
-y 332
-w 78
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Setpoint On"
-}
-autoSize
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 24
-y 304
-w 69
-h 16
-font "arial-medium-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Calibration"
-}
-autoSize
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 112
-y 356
-w 88
-h 22
-controlPv "$(device):SP1OFF"
-displayMode "exp"
-precision 1
-fgColor index 16
-fgAlarm
-bgColor index 12
-fill
-font "arial-bold-r-14.0"
-fontAlign "center"
-lineWidth 2
-lineAlarm
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 112
-y 328
-w 88
-h 22
-controlPv "$(device):SP1ON"
-displayMode "exp"
-precision 1
-fgColor index 16
-fgAlarm
-bgColor index 12
-fill
-font "arial-bold-r-14.0"
-fontAlign "center"
-lineWidth 2
-lineAlarm
-endObjectProperties
-
 # (Text Control)
 object activeXTextDspClass
 beginObjectProperties
@@ -641,7 +405,7 @@ major 4
 minor 6
 release 0
 x 216
-y 300
+y 332
 w 88
 h 22
 controlPv "$(device):SETCAL"
@@ -653,36 +417,6 @@ editable
 motifWidget
 limitsFromDb
 nullPv "$(device):SETCAL"
-nullColor index 18
-nullCondition "disabled"
-fastUpdate
-autoSelect
-useHexPrefix
-newPos
-objType "controls"
-noExecuteClipMask
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 6
-release 0
-x 216
-y 328
-w 88
-h 22
-controlPv "$(device):SETSP1ON"
-format "exponential"
-font "arial-bold-r-14.0"
-fontAlign "center"
-fgColor index 25
-bgColor index 1
-editable
-motifWidget
-limitsFromDb
-nullPv "$(device):SETSP1ON"
 nullColor index 18
 nullCondition "disabled"
 fastUpdate
@@ -735,19 +469,6 @@ lineColor index 14
 fillColor index 3
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 8
-y 408
-w 312
-h 56
-
-beginGroup
-
 # (Rectangle)
 object activeRectangleClass
 beginObjectProperties
@@ -755,7 +476,7 @@ major 4
 minor 0
 release 0
 x 8
-y 412
+y 488
 w 152
 h 48
 lineColor index 14
@@ -770,7 +491,7 @@ major 4
 minor 1
 release 0
 x 256
-y 436
+y 504
 w 64
 h 24
 fgColor index 46
@@ -789,7 +510,7 @@ major 4
 minor 3
 release 0
 x 256
-y 404
+y 472
 w 64
 h 24
 fgColor index 43
@@ -811,7 +532,7 @@ major 10
 minor 0
 release 0
 x 16
-y 428
+y 504
 w 64
 h 24
 controlPv "$(device):STARTING"
@@ -829,7 +550,7 @@ major 4
 minor 1
 release 0
 x 16
-y 428
+y 504
 w 64
 h 24
 fgColor index 25
@@ -837,8 +558,8 @@ onColor index 4
 offColor index 3
 topShadowColor index 1
 botShadowColor index 11
-controlPv "$(device):START"
-releaseValue "Start"
+controlPv "$(device):SETHV"
+releaseValue "On"
 onLabel "Start"
 offLabel "Start"
 3d
@@ -855,7 +576,7 @@ major 4
 minor 1
 release 0
 x 88
-y 428
+y 504
 w 64
 h 24
 fgColor index 25
@@ -863,8 +584,8 @@ onColor index 4
 offColor index 3
 topShadowColor index 1
 botShadowColor index 11
-controlPv "$(device):START"
-pressValue "Stop"
+controlPv "$(device):SETHV"
+pressValue "Off"
 onLabel "Stop"
 offLabel "Stop"
 3d
@@ -878,7 +599,7 @@ major 4
 minor 1
 release 1
 x 8
-y 404
+y 472
 w 56
 h 16
 font "arial-medium-r-12.0"
@@ -897,15 +618,131 @@ major 4
 minor 0
 release 0
 x 8
-y 404
+y 472
 w 56
 h 16
 lineColor index 14
 fillColor index 3
 endObjectProperties
 
-endGroup
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 128
+y 144
+w 176
+h 24
+controlPv "$(device):CONTROLLER"
+fgColor index 18
+bgColor index 10
+font "arial-bold-r-14.0"
+endObjectProperties
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 16
+y 152
+w 105
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Pump Controller"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 96
+y 208
+w 72
+h 22
+controlPv "$(device):I"
+displayMode "engineer"
+precision 1
+fgColor index 16
+fgAlarm
+bgColor index 12
+fill
+font "arial-bold-r-14.0"
+fontAlign "center"
+lineWidth 2
+lineAlarm
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 16
+y 208
+w 48
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Current"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 96
+y 176
+w 72
+h 22
+controlPv "$(device):V"
+fgColor index 16
+fgAlarm
+bgColor index 12
+fill
+font "arial-bold-r-14.0"
+fontAlign "center"
+lineWidth 2
+lineAlarm
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 16
+y 184
+w 50
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Voltage"
+}
+autoSize
 endObjectProperties
 
 # (Text Control)
@@ -915,10 +752,205 @@ major 4
 minor 6
 release 0
 x 216
-y 356
+y 304
 w 88
 h 22
-controlPv "$(device):SETSP1OFF"
+controlPv "$(device):SETV"
+format "decimal"
+font "arial-bold-r-14.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 1
+editable
+motifWidget
+limitsFromDb
+nullPv "$(device):SETV"
+nullColor index 18
+nullCondition "disabled"
+fastUpdate
+autoSelect
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 112
+y 304
+w 88
+h 22
+controlPv "$(device):V"
+fgColor index 16
+bgColor index 12
+fill
+font "arial-bold-r-14.0"
+fontAlign "center"
+lineWidth 2
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 24
+y 304
+w 76
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Voltage Set"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 24
+y 388
+w 78
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Setpoint Off"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 24
+y 360
+w 78
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Setpoint On"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 24
+y 332
+w 69
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Calibration"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 112
+y 388
+w 88
+h 22
+controlPv "$(device):SPOFF"
+displayMode "exp"
+precision 1
+fgColor index 16
+fgAlarm
+bgColor index 12
+fill
+font "arial-bold-r-14.0"
+fontAlign "center"
+lineWidth 2
+lineAlarm
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 112
+y 360
+w 88
+h 22
+controlPv "$(device):SPON"
+displayMode "exp"
+precision 1
+fgColor index 16
+fgAlarm
+bgColor index 12
+fill
+font "arial-bold-r-14.0"
+fontAlign "center"
+lineWidth 2
+lineAlarm
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 112
+y 332
+w 88
+h 22
+controlPv "$(device):CAL"
+fgColor index 16
+fgAlarm
+bgColor index 12
+fill
+font "arial-bold-r-14.0"
+fontAlign "center"
+lineWidth 2
+lineAlarm
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
+release 0
+x 216
+y 388
+w 88
+h 22
+controlPv "$(device):SETSPOFF"
 format "exponential"
 font "arial-bold-r-14.0"
 fontAlign "center"
@@ -927,7 +959,7 @@ bgColor index 1
 editable
 motifWidget
 limitsFromDb
-nullPv "$(device):SETSP1OFF"
+nullPv "$(device):SETSPOFF"
 nullColor index 18
 nullCondition "disabled"
 fastUpdate
@@ -936,5 +968,97 @@ useHexPrefix
 newPos
 objType "controls"
 noExecuteClipMask
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
+release 0
+x 216
+y 360
+w 88
+h 22
+controlPv "$(device):SETSPON"
+format "exponential"
+font "arial-bold-r-14.0"
+fontAlign "center"
+fgColor index 25
+bgColor index 1
+editable
+motifWidget
+limitsFromDb
+nullPv "$(device):SETSPON"
+nullColor index 18
+nullCondition "disabled"
+fastUpdate
+autoSelect
+useHexPrefix
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 24
+y 424
+w 82
+h 16
+font "arial-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Auto Restart"
+}
+autoSize
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 112
+y 424
+w 88
+h 22
+controlPv "$(device):AUTOST"
+fgColor index 16
+fgAlarm
+bgColor index 12
+fill
+font "arial-bold-r-14.0"
+fontAlign "center"
+lineWidth 2
+endObjectProperties
+
+# (Choice Button)
+object activeChoiceButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 224
+y 416
+w 72
+h 32
+fgColor index 14
+bgColor index 3
+selectColor index 3
+inconsistentColor index 5
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(device):SETAUTOST"
+indicatorPv "$(device):AUTOST"
+font "arial-medium-r-16.0"
+orientation "horizontal"
 endObjectProperties
 

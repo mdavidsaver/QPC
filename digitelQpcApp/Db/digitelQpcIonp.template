@@ -7,10 +7,10 @@
 #% macro, name, Object name and gui association name
 #% macro, port, asyn serial port number
 #% macro, unit, unit number for multi-drop serial (2 hex digits - 05 by default)
-#% macro, pump, ion pump number (1 or 2)
+#% macro, pump, ion pump number (1, 2, 3, 4)
 #% macro, size, pump size (l/s)
-#% macro, sp1on, setpoint1 on
-#% macro, sp1off, setpoint1 off
+#% macro, spon, setpoint on
+#% macro, spoff, setpoint off
 #% macro, display, label on controller screen
 #% macro, alh,  alarm handler tag (Defaults to None) c.f. mp49's commit 80833
 #% macro, text, Text to display in the ion pump controller window.
@@ -91,7 +91,7 @@ record(bo, "$(device):SETHV")
 record(ai, "$(device):I") {
     field(DESC, "Pump Current")
     field(DTYP, "stream")
-    field(INP,  "@digitelQpc.proto current($(unit),$(pump)) $(port)")
+    field(INP,  "@digitelQpc.proto getCurrent($(unit),$(pump)) $(port)")
     field(SCAN, "1 second")
     field(EGU,  "A")
     field(LOPR, "0.0")
@@ -109,7 +109,7 @@ record(ai, "$(device):I") {
 record(ai, "$(device):P") {
     field(DESC, "Pump Pressure")
     field(DTYP, "stream")
-    field(INP,  "@digitelQpc.proto pressure($(unit),$(pump)) $(port)")
+    field(INP,  "@digitelQpc.proto getPressure($(unit),$(pump)) $(port)")
     field(SCAN, "1 second")
     field(FLNK, "$(device):PLOG")
     field(EGU,  "mbar")
@@ -152,7 +152,7 @@ record(calc, "$(device):PLOG")
 record(longin, "$(device):V") {
     field(DESC, "Pump Voltage")
     field(DTYP, "stream")
-    field(INP,  "@digitelQpc.proto voltage($(unit),$(pump)) $(port)")
+    field(INP,  "@digitelQpc.proto getVoltage($(unit),$(pump)) $(port)")
     field(SCAN, "1 second")
     field(EGU,  "V")
     field(LOPR, "0")
@@ -169,7 +169,7 @@ record(mbbi, "$(device):STA")
 {
     field(DESC, "Supply Status")
     field(DTYP, "stream")
-    field(INP,  "@digitelQpc.proto status($(unit),$(pump),$(device):ERROR) $(port)")
+    field(INP,  "@digitelQpc.proto getStatus($(unit),$(pump),$(device):ERROR) $(port)")
     field(SCAN, "1 second")
     field(ZRST, "Standby")
     field(ONST, "Starting")
@@ -287,7 +287,7 @@ record(mbbi, "$(device):ERR")
 record(longin, "$(device):SIZE") {
     field(DESC, "Pump Size")
     field(DTYP, "stream")
-    field(INP,  "@digitelQpc.proto size($(unit),$(pump)) $(port)")
+    field(INP,  "@digitelQpc.proto getPumpSize($(unit),$(pump)) $(port)")
     field(SCAN, "10 second")
     field(EGU,  "l/s")
     field(LOPR, "0")
@@ -300,7 +300,7 @@ record(longin, "$(device):SIZE") {
 record(ao, "$(device):SETSIZE") {
     field(DESC, "Pump Size")
     field(DTYP, "stream")
-    field(OUT,  "@digitelQpc.proto setsize($(unit),$(pump)) $(port)")
+    field(OUT,  "@digitelQpc.proto setPumpSize($(unit),$(pump)) $(port)")
     field(PINI, "YES")
     field(DOL,  "$(size)")
     field(EGU,  "l/s")
@@ -380,208 +380,138 @@ record(bi,"$(device):STARTING")
 
 ## ----------------- SP1 -------------------------------
 #
-# -----------------------------------------------------------------------------------------
-# These two records work together to provide one scan
-# to correctly initialise the SETSPS1 and SETSPS2 records just once
-# at startup.
-#
-record(bo, "$(device):INIT:SETSPSDIS") 
-    {
-    field(DTYP, "Soft Channel")
-    field(VAL, "1")
-    field(OUT, "$(device):INIT:SETSPSEQ.DISA")
-    }
-#
-# 1) Get the instrument value for SP1 ON/OFF
-# 1a) Wait one second for :RQSTSP1ON to complete and populate :SP1OFF and :SP1ON
-# 2) Disable instrument update of setting SP1 ON/OFF
-# 3) LOAD SETSP1OFF with SP1OFF
-# 4) LOAD SETSP1ON with SP1ON
-# 5) Enable instrument update of setting SP1 ON/OFF
-# 6) Process seq for SP2
-# 7) Disable this seq record from processing again
-record(seq, "$(device):INIT:SETSPSEQ") 
-    {
-    field(SCAN, "1 second")
-    field(SELM, "All")
-    field(LNK1, "$(device):RQSTSP1ON PP")
-    field(LNK2, "$(device):SETSPS1.DISA PP")
-    field(LNK3, "$(device):SETSP1OFF PP")
-    field(LNK4, "$(device):SETSP1ON PP")
-    field(LNK5, "$(device):SETSPS1.DISA PP")
-    field(DLY1, "0")
-    field(DLY2, "3.0")
-    field(DLY3, "0")
-    field(DLY4, "0")
-    field(DLY7, "0")
-    field(DOL1, "0")
-    field(DOL2, "1")
-    field(DOL3, "$(device):SP1OFF")
-    field(DOL4, "$(device):SP1ON")
-    field(DOL5, "0")
-    field(DOL6, "0")
-    field(DOL7, "1")
-    }
-    
-
-# Although requesting SPS is logically an input, a calcout has been 
-# used here to allow the return values to be injected directly into the 
-# given record names via input links.
-#
-# Record RQSTSP1OFF is I/O Intr and gets (a copy of) any input, including input that was directed to record RQSTSP1ON
-# Record RQSTSP1STATE is I/O Intr and gets (a copy of) any input, including input that was directed to record RQSTSP1ON
- 
-# sps: Parameter    1) Unit number
-#                   2) Device base name
-#                   3) Logical setpoint number for this pump (only 1 for the QPC) - gets converted to actual setpoint in protocol.
-#
-record(ai, "$(device):RQSTSP1ON") 
-    {
-    field(DESC, "Rqst Setpoint1")
-    field(DTYP, "stream")
-    field(SCAN, "Passive")
-    field(INP,  "@digitelQpc.proto getsps($(unit),$(device),1) $(port)")
-    field(PINI, "NO")
-    }
-
-
-#% archiver 10 Monitor
-#% controldesk Setpoint 1 readback
-# This PV is written to directly from the protocol (sps) return string
-#
-record(ai, "$(device):SP1ON") 
-    {
-    field(DESC, "Setpoint 1 On")
-    field(DTYP, "Soft Channel")
-    field(EGU,  "mbar")
-    field(LOPR, "0.0")
-    field(HOPR, "1000.0")
-    field(PREC, "1")
-    }
-#
-#% archiver 10 Monitor
-#% controldesk Setpoint 1 readback
-#
-# This PV is written to directly from the protocol (sps) return string
-record(ai, "$(device):SP1OFF") 
-    {
-    field(DESC, "Setpoint 1 Off")
-    field(EGU,  "mbar")
-    field(LOPR, "0.0")
-    field(HOPR, "1000.0")
-    field(PREC, "1")
-    }
-# This PV is written to directly from the protocol (sps) return string
-record(bi,"$(device):SP1STATE")
-    {
-    field(DESC, "Setpoint 1 State")
-    field(PINI, "NO")
-    field(INP,  "0")
-    field(ZNAM, "Off")
-    field(ONAM, "On")
-    }
-#
-#% archiver 10 Monitor
-#% controldesk Setpoint 1 setpoint
-#
-record(ao, "$(device):SETSP1ON") 
-    {
-    field(VAL,  "$(sp1on=1.0E-7)")
-    field(DESC, "Setpoint 1 On")
-    field(EGU,  "mbar")
-    field(DRVL, "1.0E-10")
-    field(DRVH, "1.0E-4")
-    field(LOPR, "0.0")
-    field(HOPR, "1000.0")
-    field(PREC, "1")
-    field(FLNK, "$(device):SETSPS1")
-    }
-#
-#% archiver 10 Monitor
-#% controldesk Setpoint 1 Off setpoint
-#
-record(ao, "$(device):SETSP1OFF") 
-    {
-    field(VAL,  "$(sp1off=2.0E-7)")
-    field(DESC, "Setpoint 1 Off")
-    field(EGU,  "mbar")
-    field(DRVL, "1.0E-10")
-    field(DRVH, "1.0E-4")
-    field(LOPR, "0.0")
-    field(HOPR, "1000.0")
-    field(PREC, "1")
-    field(FLNK, "$(device):SETSPS1")
-    }
-
-# NB: INPF is written to by :SPNUM1 on PINI
-#     The supply number is equivalent to pump number (1 | 2)
-#
-# INPA => Setpoint ON pressure
-# INPB => Setpoint OFF pressure
-# INPC => Source (usually equivalent to pump [1|2])
-# INPD => Lower pressure working limit
-# INPE => Upper pressure working limit
-# INPF => Setpoint interlock number [1..4]
-#
-# QPC Command:
-# N, F, S, XXE-XX, YY-YY
-# N - setpoint number (1-8, but specifically 1-4 for relays)
-# F - function: 0 = Off, 1 = Pressure Setpoint, 2 = HV Errors, 3 = HV On/Off Indicator
-#
-record(calcout, "$(device):SETSPS1") 
-    {
-    field(DESC, "Output Setpoints")
-    field(DTYP, "stream")
-    field(OUT,  "@digitelQpc.proto setsps($(unit),$(device),1) $(port)")
-    field(INPA, "$(device):SETSP1ON")
-    field(INPB, "$(device):SETSP1OFF")
-    field(INPC, "$(pump)")
-    field(INPD, "1.01E-10")
-    field(INPE, "9.99E-5")
-    field(INPF, "$(device):SPNUM1")
-    field(CALC, "((A<D)||(B>E)||(F<1))?0:F")
-    field(OOPT, "When Non-zero")
-    field(PINI, "NO")
-    field(FLNK, "$(device):RQSTSP1ON")
-    }
-
-
-# Calculate the controller setpoint number for this pump
-# Each setpoint has an ON and an OFF pressure attribute.
-#
-# Note: This is a hangover from the digitelMpc which has
-# two setpoints per pumnp available, the QPC has only one per pump.
-# The notion of setpoint number has been preserved for completeness
-# and uniformity with the MPC template.
-#
-# Pump  Pump Setpoint  Controller Setpoint (relay)
-#   1       1                    1
-#   2       1                    3
-#   3       1                    2
-#   4       1                    4
-
-record(calc, "$(device):SPNUM1") 
-    {
-    field(DESC, "Controller setpoints number Pump 1")
-    field(INPA, "$(pump)")
-    field(CALC, "(A>1)?A:1")
-    field(PINI, "YES")
-    field(FLNK, "$(device):SETSPS1")
-    }
-
-
-
-################################################################################
-# Text string on front panel
-#
-record(stringout, "$(device):SETTEXT") {
-    field(DESC, "Text String")
-    field(VAL , "$(text=$(display))")
-    field(DTYP, "stream")
-    field(OUT,  "@digitelQpc.proto settext($(unit),$(pump)) $(port)")
-    field(PINI, "YES")
+###################################################################
+# Pump set point readbacks for on/off pressures and relay/digital out status
+# These records are really only good for 1 set point but the database is good
+# for 1 of the controllers pump supplies.
+record(ai, "$(device):SPON"){
+	field(DESC, "Reads Pump on press for pump $(PMP)")
+	field(PINI, "YES")
+	field(SCAN, "5 second")
+	field(DTYP, "stream")
+	field(INP, "@digitelQpc.proto getOnPressSpt($(SPT)) $(DEVICE)")
+    field(PREC,"1")
 }
-################################################################################
+record(ai, "$(device):SPOFF"){
+	field(DESC, "Reads Pump off press for pump $(PMP)")
+	field(PINI, "YES")
+	field(SCAN, "5 second")
+	field(DTYP, "stream")
+	field(INP, "@digitelQpc.proto getOffPressSpt($(SPT)) $(DEVICE)")
+    field(PREC,"1")
+}
+record(bi, "$(device):SPSTAT") {
+	field(DESC, "Read Spt$(SPT) status for pump $(PMP)")
+	field(PINI, "YES")
+	field(SCAN, "5 second")
+	field(DTYP, "stream")
+	field(INP, "@digitelQpc.proto getSptStatus($(SPT)) $(DEVICE)")
+	field(OSV, "MAJOR")
+	field(ZNAM, "Setpoint Off")
+	field(ONAM, "Setpoint On")
+}
+###################################################################
+# Pump set point on pressure set
+# CAUTION: Setting this to a value greater than the off pressure will
+#	   cause the off pressure to be readjusted (by the pump firmware)
+#	   so that the off pressure will be 20% greater than the on pressure
+#	   The same does not hold true for setting the off pressure but insetad
+#	   the controller will simply return an error.
+record(ao, "$(device):SETSPON") {
+	field(DESC, "Set setpoint on pressure")
+	field(DTYP, "stream")
+	field(OUT, "@digitelQpc.proto setOnPress($(SPLY),$(SPT),$(SYSTEM),$(PMP)) $(DEVICE)")
+	field(OMSL, "supervisory")
+	field(DRVH,"1.0E-4")
+	field(DRVL,"1.0e-11")
+    field(PREC,"1")
+    field(FLNK,"$(device):SPMSG.PROC PP NMS")
+}
+############################################################
+# Set the off pressure
+# This is a bit more tricky than setting on pressure in order to avoid the return
+# error message.
+# Must be set between 1.0E-4 and 1.0E-11
+# Must be at least 20% > than on pressure
+# INPA - Reserved for user input of desired off pressure
+############################################################
+record(calcout,"$(device):SETSPOFF") {
+        field(DESC,"Set off pressure")
+        field(CALC,"(A>=(B+B*0.2))?((A<D)&&(A>C))?A:2:1")
+        field(INPB,"$(device):SPON.VAL NPP NMS")
+        field(INPC,"$(device):SENDSPOFF.DRVL NPP NMS")
+        field(INPD,"$(device):SENDSPOFF.DRVH NPP NMS")
+        field(INPE,"$(device):SPOFF.VAL NPP NMS")
+        field(OUT,"$(device):CHECKOFF.PROC PP NMS")
+        field(OOPT,"Every Time")
+        field(DOPT,"Use CALC")
+        field(PREC,"1")
+}
+# For the record above:
+# A means a pressure at least 20% > than on pressure and within range
+# 2 means the entered off pressure is not within the valid range
+# 1 means the entered off pressure is not 20% > than on pressure
+######################################################################
+# Check for a value between zero and one and send to device only if true
+# otherwise device will report an error. This allows better control over sending
+# the message to the QPC to try and not generate an error.
+######################################################################
+record(calcout,"$(device):CHECKOFF) {
+        field(DESC,"Set off pressure")
+        field(CALC,"(A<1&&A>0)?A:0")
+        field(INPA,"$(device):SETSPOFF.VAL NPP NMS")
+        field(OUT,"$(device):SENDSPOFF.VAL PP NMS")
+        field(OOPT,"When Non-zero")
+        field(DOPT,"Use CALC")
+        field(FLNK,"$(device):CREATEOFFMSG.PROC PP NMS")
+}
+# Sends a valid off pressure command
+record(ao, "$(device):SENDSPOFF") {
+	field(DESC, "send SP Off pressure")
+	field(DTYP, "stream")
+	field(OUT, "@digitelQpc.proto setOffPress($(SPLY),$(SPT),$(SYSTEM),$(PMP)) $(DEVICE)")
+	field(OMSL, "supervisory")
+	field(DRVH,"1.0E-4")
+	field(DRVL,"1.0e-11")
+}
+# Create a off set point range message for user display and forward it to
+# the actual message generator (SPOFFMSG.CC)
+record(scalcout,"$(device):CREATEOFFMSG") {
+        field(DESC,"Generates messages")
+        field(CALC,"A=2?AA+$P('%.1e',E)+BB+$P('%.1e',F):A")
+        field(INPA,"$(device):SETSPOFF.VAL NPP NMS")
+        field(INPB,"$(device):CHECKOFF.VAL NPP NMS")
+        field(INPE,"$(device):SENDSPOFF.DRVH NPP NMS")
+        field(INPF,"$(device):SENDSPOFF.DRVL NPP NMS")
+        field(AA,"Off Spt must be < ")
+        field(BB," & > ")
+        field(OUT,"$(device):SPOFFMSG.CC PP NMS")
+        field(OOPT,"Every Time")
+}
+# Message to user about sending off set point pressure value
+# Probelm is with the CC message, in order to print values of E & F the calc
+# gets too long
+record(scalcout,"$(device):SPOFFMSG") {
+        field(DESC,"Generates messages")
+        field(CALC,"A=1?BB:A=2?CC:B#0?AA:DD")
+        field(INPA,"$(device):SETSPOFF.VAL NPP NMS")
+        field(INPB,"$(device):CHECKOFF.VAL NPP NMS")
+        field(AA,"Off Setpoint Sent")
+        field(BB,"Off Spt must be 20% > than On")
+        field(DD," ")
+        field(OUT,"$(device):SPOFFMSG.VAL PP NMS")
+        field(OOPT,"Every Time")
+}
+record(stringin, "$(device):SPOFFMSG")
+{
+	field(DESC, "Display Off Spt Mesg")
+	field(INP, " ")
+}
+record(stringin, "$(device):SPMSG")
+{
+	field(DESC, "Display Spt Error Mesg")
+	field(INP, " ")
+}
 
 ################################################################################
 # Text error message

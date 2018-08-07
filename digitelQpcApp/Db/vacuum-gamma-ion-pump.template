@@ -2,125 +2,251 @@
 ######
 # Unless the setpoints are loaded sperately we can have only 1 per pump supply
 ######
-# SYSTEM - PV prefix or system name
+# device - full ion pump device name (PV base)
+# controller - The QPC pump controller to which this pump is connected
 # SPT - Set point number for this pump
 # SPLY - Which pump supply number
-record(ai, "$(SYSTEM)$(PMP):I")
+
+record(stringin, "$(device):CONTROLLER")
 {
-	field(DESC, "Reads Channel Current")
-	field(SCAN, "5 second")
+	field(DESC, "QPC Controller")
 	field(PINI, "YES")
-	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getCurrent($(unit),$(SPLY)) $(port)")
+	field(VAL, $(controller))
 }
 
-record(ai, "$(SYSTEM)$(PMP):P")
+
+################################################################################
+# Automatically Restart on power up
+#
+record(bo, "$(device):SETAUTOST")
 {
-	field(DESC, "Reads Channel Current")
-	field(SCAN, "5 second")
+    field(DESC, "Auto Restart")
+    field(DTYP, "stream")
+    field(OUT,  "@vacuum-gamma-qpc.proto setautost($(unit=01),$(SPLY)) $(port)")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(DOL,  "0")
+    field(PINI, "YES")
+    field(FLNK, "$(device):AUTOST")
+}
+#
+#% controldesk Auto Restart smon
+#
+record(bi, "$(device):AUTOST")
+{
+    field(DESC, "Auto Restart")
+    field(DTYP, "stream")
+    field(INP,  "@vacuum-gamma-qpc.proto autost($(unit=01),$(SPLY)) $(port)")
+    field(SCAN, "Passive")
+    field(PINI, "YES")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+################################################################################
+# Calibration factor
+#
+#% archiver 10 Monitor
+#% controldesk Calibration Factor readback
+#
+record(ai, "$(device):CAL") {
+    field(DESC, "Calibration Factor")
+    field(DTYP, "stream")
 	field(PINI, "YES")
-	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getPressure($(unit),$(SPLY)) $(port)")
+    field(INP,  "@vacuum-gamma-qpc.proto getcal($(unit=01),$(SPLY)) $(port)")
+    field(SCAN, "Passive")
+    field(LOPR, "0.0")
+    field(HOPR, "9.99")
+    field(PREC, "2")
+}
+#
+#% archiver 10 Monitor
+#% controldesk Calibration Factor setpoint
+#
+record(ao, "$(device):SETCAL") {
+    field(DESC, "Calibration Factor")
+    field(DTYP, "stream")
+    field(OUT,  "@vacuum-gamma-qpc.proto setcal($(unit=01),$(SPLY)) $(port)")
+    field(DRVL, "0.0")
+    field(DRVH, "9.99")
+    field(LOPR, "0.0")
+    field(HOPR, "9.99")
+    field(PREC, "2")
+    field(FLNK, "$(device):CAL")
 }
 
-record(ai, "$(SYSTEM)$(PMP):V")
+
+################################################################################
+# Set target output voltage
+# SPLY - Supply (1-4)
+# .VAL - Target voltage (3000 - 7000)
+#
+#
+#% archiver 10 Monitor
+#% controldesk Target voltage setpoint
+#
+record(ao, "$(device):SETV") {
+    field(DESC, "Set target voltage")
+    field(DTYP, "stream")
+    field(OUT,  "@vacuum-gamma-qpc.proto setVoltage($(unit=01),$(SPLY)) $(port)")
+    field(DRVL, "3000")
+    field(DRVH, "7000")
+    field(LOPR, "3000")
+    field(HOPR, "7000")
+    field(PREC, "0")
+}
+
+
+################################################################################
+# Switch on/off HV
+#
+record(bo, "$(device):SETHV")
+{
+    field(DESC, "HV On / Off")
+    field(DTYP, "stream")
+    field(OUT,  "@vacuum-gamma-qpc.proto sethv($(unit=01),$(SPLY),$(device)) $(port)")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+    field(DOL,  "0")
+    field(PINI, "YES")
+}
+
+record(bi,"$(device):STARTING")
+{
+    field(DESC, "Starting Pumps")
+    field(PINI, "YES")
+    field(INP,  "0")
+    field(ZNAM, "")
+    field(ONAM, "Starting")
+}
+
+record(ai, "$(device):I")
 {
 	field(DESC, "Reads Channel Current")
 	field(SCAN, "5 second")
-	field(PINI, "YES")
+#	field(PINI, "YES")
 	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getVoltage($(unit),$(SPLY)) $(port)")
+	field(INP, "@vacuum-gamma-qpc.proto getCurrent($(unit=01),$(SPLY)) $(port)")
 }
 
-record(stringin, "$(SYSTEM)$(PMP):STA")
+record(ai, "$(device):P")
 {
 	field(DESC, "Reads Channel Current")
 	field(SCAN, "5 second")
-	field(PINI, "NO")
+#	field(PINI, "YES")
 	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getStatus($(unit),$(SPLY)) $(port)")
+	field(INP, "@vacuum-gamma-qpc.proto getPressure($(unit=01),$(SPLY)) $(port)")
 }
 
-record(stringin, "$(SYSTEM)$(PMP):ENABLED")
+record(ai, "$(device):V")
+{
+	field(DESC, "Reads Channel Current")
+	field(SCAN, "5 second")
+#	field(PINI, "YES")
+	field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getVoltage($(unit=01),$(SPLY)) $(port)")
+}
+
+################################################################################
+# Get supply status
+#
+#% archiver 10 Monitor
+#% controldesk Supply Status smon
+#% $(alh=None) $SEVRCOMMAND UP_ANY dls-alh-handler.py $(device):STA
+record(mbbi, "$(device):STA")
+{
+    field(DESC, "Supply Status")
+    field(DTYP, "stream")
+	field(INP, "@vacuum-gamma-qpc.proto getStatus($(unit=01),$(SPLY),$(device):STATUSERRMSG) $(port)")
+    field(SCAN, "5 second")
+    field(ZRST, "Standby")
+    field(ONST, "Starting")
+    field(TWST, "Running")
+    field(THST, "Cool Down")
+    field(FRST, "Pump Error")
+    field(FVST, "Invalid")
+    field(SXST, "Invalid")
+    field(SVST, "Invalid")
+    field(EIST, "Invalid")
+    field(NIST, "Invalid")
+    field(TEST, "Invalid")
+    field(ELST, "Invalid")
+    field(TVST, "Invalid")
+    field(TTST, "Invalid")
+    field(FTST, "Invalid")
+    field(FFST, "Invalid")
+    field(UNSV, "MAJOR")
+    field(ZRSV, "MAJOR")
+    field(ONSV, "MAJOR")
+    field(TWSV, "MAJOR")
+    field(THSV, "MAJOR")
+    field(FRSV, "NO_ALARM")
+    field(FVSV, "MINOR")
+    field(SXSV, "MAJOR")
+    field(SVSV, "MAJOR")
+    field(EISV, "MAJOR")
+    field(NISV, "MAJOR")
+    field(TESV, "MAJOR")
+    field(ELSV, "MAJOR")
+    field(TVSV, "MAJOR")
+    field(TTSV, "MAJOR")
+    field(FTSV, "MAJOR")
+    field(FFSV, "MAJOR")
+    field(FLNK, "$(device):ERRSEL")
+}
+
+record(bi, "$(device):ENABLED")
 {
 	field(DESC, "Reads channel HV status.")
-	field(SCAN, "5 second")
-	field(PINI, "YES")
-	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto isEnabled($(unit),$(SPLY)) $(port)")
+	field(SCAN, "Passive")
+	field(ZSV, "MAJOR")
+	field(ZNAM, "No")
+	field(ONAM, "Yes")
 }
 
-record(bo, "$(SYSTEM)$(PMP):ENABLE")
+record(calcout, "$(device):CALCENABLED")
+{
+    field(DESC, "Reads channel HV status.")
+    field(SCAN, "2 second")
+    field(INPA, "$(device):STA PP MS")
+    field(CALC, "(A>=1)&&(A<=2)?1:0")
+    field(OUT, "$(device):ENABLED PP")
+}
+
+
+
+record(bo, "$(device):ENABLE")
 {
 	field(DESC, "Enable ion pump HV")
 	field(PINI, "NO")
-	field(VAL, "1") # Dummy Value
+	field(VAL, "1")
 	field(DTYP, "stream")
-	field(OUT, "@vacuum-gamma-qpc.proto enable($(unit),$(SPLY)) $(port)")
+	field(OUT, "@vacuum-gamma-qpc.proto sethv($(unit=01),$(SPLY),$(device)) $(port)")
 }
 
-record(bo, "$(SYSTEM)$(PMP):DISABLE")
+record(bo, "$(device):DISABLE")
 {
 	field(DESC, "Disable ion pump HV")
 	field(PINI, "NO")
-	field(VAL, "1") # Dummy Value
+	field(VAL, "0")
 	field(DTYP, "stream")
-	field(OUT, "@vacuum-gamma-qpc.proto disable($(unit),$(SPLY)) $(port)")
+	field(OUT, "@vacuum-gamma-qpc.proto sethv($(unit=01),$(SPLY),$(device)) $(port)")
 }
 
-record(stringin, "$(SYSTEM)$(PMP):MODEL")
-{
-	field(DESC, "Reads Device Model")
-	field(PINI, "YES")
-	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getModel($(unit)) $(port)")
-}
-
-record(stringin, "$(SYSTEM)$(PMP):FIRMWARE")
-{
-	field(DESC, "Reads Device Firmware")
-	field(PINI, "YES")
-	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getFirmware($(unit)) $(port)")
-}
-
-record(mbbo,"$(SYSTEM)$(PMP):SETPUNITS") {
-	field(DESC,"Set Pressure Units for pump $(SPLY)")
-	field(NOBT,"2")
- 	field(DTYP, "stream")
-	field(OUT,"@vacuum-gamma-qpc.proto setPressUnit($(unit),$(SPLY)) $(port)")
-	field(ZRVL,"0")
-	field(ONVL,"1")
-	field(TWVL,"2")
-	field(ZRST,"TORR")
-	field(ONST,"MBAR")
-	field(TWST,"PASCAL")
-}
-record(mbbi,"$(SYSTEM)$(PMP):PUNITS")
-    {
-    field(DESC, "Pressure Units Readback")
-    field(INP, "$(SYSTEM)$(PMP):SETPUNITS.VAL CP NMS")
-	field(ZRVL,"0")
-	field(ONVL,"1")
-	field(TWVL,"2")
-	field(ZRST,"TORR")
-	field(ONST,"MBAR")
-	field(TWST,"PASCAL")
-    }
 ###################################################################
 # Pump size
-record(ai, "$(SYSTEM)$(PMP):PUMPSIZE")
+record(ai, "$(device):PUMPSIZE")
     {
 	field(DESC, "Reads Pump Size for pump $(SPLY)")
 	field(PINI, "YES")
 	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getPumpSize($(unit),$(SPLY)) $(port)")
+	field(INP, "@vacuum-gamma-qpc.proto getPumpSize($(unit=01),$(SPLY)) $(port)")
 	field(EGU,"L/S")
     }
-record(ao, "$(SYSTEM)$(PMP):SETPUMPSIZE") {
+record(ao, "$(device):SETPUMPSIZE") {
 	field(DESC, "Sets Pump Size (L/S) for Pump $(SPLY)")
 	field(DTYP, "stream")
-	field(OUT, "@vacuum-gamma-qpc.proto setPumpSize($(unit),$(SPLY)) $(port)")
+	field(OUT, "@vacuum-gamma-qpc.proto setPumpSize($(unit=01),$(SPLY)) $(port)")
 	field(OMSL, "supervisory")
 	field(EGU,"L/S")
 	field(DRVH,"1200")
@@ -130,28 +256,28 @@ record(ao, "$(SYSTEM)$(PMP):SETPUMPSIZE") {
 # Pump set point readbacks for on/off pressures and relay/digital out status
 # These records are really only good for 1 set point but the database is good
 # for 1 of the controllers pump supplies.
-record(ai, "$(SYSTEM)$(PMP):SPON"){
+record(ai, "$(device):SPON"){
 	field(DESC, "Reads Pump on press for pump $(SPLY)")
-	field(PINI, "YES")
+	#field(PINI, "YES")
 	field(SCAN, "5 second")
 	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getOnPressSpt($(unit),$(SPLY)) $(port)")
+	field(INP, "@vacuum-gamma-qpc.proto getOnPressSpt($(unit=01),$(SPLY)) $(port)")
     field(PREC,"1")
 }
-record(ai, "$(SYSTEM)$(PMP):SPOFF"){
+record(ai, "$(device):SPOFF"){
 	field(DESC, "Reads Pump off press for pump")
-	field(PINI, "YES")
+	#field(PINI, "YES")
 	field(SCAN, "5 second")
 	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getOffPressSpt($(unit),$(SPLY)) $(port)")
+	field(INP, "@vacuum-gamma-qpc.proto getOffPressSpt($(unit=01),$(SPLY)) $(port)")
     field(PREC,"1")
 }
-record(bi, "$(SYSTEM)$(PMP):SPSTA") {
+record(bi, "$(device):SPSTA") {
 	field(DESC, "Read Spt$(SPT) status for pump")
 	field(PINI, "YES")
 	field(SCAN, "5 second")
 	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getSptStatus($(unit),$(SPLY)) $(port)")
+	field(INP, "@vacuum-gamma-qpc.proto getSptStatus($(unit=01),$(SPLY)) $(port)")
 	field(OSV, "MAJOR")
 	field(ZNAM, "Setpoint $(SPT) Off")
 	field(ONAM, "Setpoint $(SPT) On")
@@ -163,15 +289,15 @@ record(bi, "$(SYSTEM)$(PMP):SPSTA") {
 #	   so that the off pressure will be 20% greater than the on pressure
 #	   The same does not hold true for setting the off pressure but insetad
 #	   the controller will simply return an error.
-record(ao, "$(SYSTEM)$(PMP):SETSPON") {
+record(ao, "$(device):SETSPON") {
 	field(DESC, "Set on press for Spt$(SPT)")
 	field(DTYP, "stream")
-	field(OUT, "@vacuum-gamma-qpc.proto setOnPress($(unit),$(SPLY),$(SPT),$(SYSTEM),$(PMP)) $(port)")
+	field(OUT, "@vacuum-gamma-qpc.proto setOnPress($(unit=01),$(SPLY),$(SPT),$(device)) $(port)")
 	field(OMSL, "supervisory")
 	field(DRVH,"1.0E-4")
 	field(DRVL,"1.0e-11")
     field(PREC,"1")
-    field(FLNK,"$(SYSTEM)$(PMP):SPMESSAGE.PROC PP NMS")
+    field(FLNK,"$(device):SPMESSAGE.PROC PP NMS")
 }
 ############################################################
 # Set the off pressure
@@ -181,14 +307,14 @@ record(ao, "$(SYSTEM)$(PMP):SETSPON") {
 # Must be at least 20% > than on pressure
 # INPA - Reserved for user input of desired off pressure
 ############################################################
-record(calcout,"$(SYSTEM)$(PMP):SETSPOFF") {
+record(calcout,"$(device):SETSPOFF") {
         field(DESC,"Set off press")
         field(CALC,"(A>=(B+B*0.2))?((A<D)&&(A>C))?A:2:1")
-        field(INPB,"$(SYSTEM)$(PMP):SPON.VAL NPP NMS")
-        field(INPC,"$(SYSTEM)$(PMP):SENDOFFP.DRVL NPP NMS")
-        field(INPD,"$(SYSTEM)$(PMP):SENDOFFP.DRVH NPP NMS")
-        field(INPE,"$(SYSTEM)$(PMP):SPOFF.VAL NPP NMS")
-        field(OUT,"$(SYSTEM)$(PMP):CHECKOFFP.PROC PP NMS")
+        field(INPB,"$(device):SPON.VAL NPP NMS")
+        field(INPC,"$(device):SENDOFFP.DRVL NPP NMS")
+        field(INPD,"$(device):SENDOFFP.DRVH NPP NMS")
+        field(INPE,"$(device):SPOFF.VAL NPP NMS")
+        field(OUT,"$(device):CHECKOFFP.PROC PP NMS")
         field(OOPT,"Every Time")
         field(DOPT,"Use CALC")
         field(PREC,"1")
@@ -202,60 +328,146 @@ record(calcout,"$(SYSTEM)$(PMP):SETSPOFF") {
 # otherwise device will report an error. This allows better control over sending
 # the message to the QPC to try and not generate an error.
 ######################################################################
-record(calcout,"$(SYSTEM)$(PMP):CHECKOFFP") {
+record(calcout,"$(device):CHECKOFFP") {
         field(DESC,"Set off press for Spt$(SPT) Pump $(SPLY)")
         field(CALC,"(A<1&&A>0)?A:0")
-        field(INPA,"$(SYSTEM)$(PMP):SETSPOFF.VAL NPP NMS")
-        field(OUT,"$(SYSTEM)$(PMP):SENDOFFP.VAL PP NMS")
+        field(INPA,"$(device):SETSPOFF.VAL NPP NMS")
+        field(OUT,"$(device):SENDOFFP.VAL PP NMS")
         field(OOPT,"When Non-zero")
         field(DOPT,"Use CALC")
-        field(FLNK,"$(SYSTEM)$(PMP):SPOFFMSG.PROC PP NMS")
+        field(FLNK,"$(device):SPOFFMSG.PROC PP NMS")
 }
 # Sends a valid off pressure command
-record(ao, "$(SYSTEM)$(PMP):SENDOFFP") {
+record(ao, "$(device):SENDOFFP") {
 	field(DESC, "send press for Spt$(SPT) Pump $(SPLY)")
 	field(DTYP, "stream")
-	field(OUT, "@vacuum-gamma-qpc.proto setOffPress($(unit),$(SPLY),$(SPT),$(SYSTEM),$(PMP)) $(port)")
+	field(OUT, "@vacuum-gamma-qpc.proto setOffPress($(unit=01),$(SPLY),$(SPT),$(device)) $(port)")
 	field(OMSL, "supervisory")
 	field(DRVH,"1.0E-4")
 	field(DRVL,"1.0e-11")
 }
 # Create a off set point range message for user display and forward it to
 # the actual message generator (SPOPMSG.CC)
-record(scalcout,"$(SYSTEM)$(PMP):SPOFFMSG") {
+record(scalcout,"$(device):SPOFFMSG") {
         field(DESC,"Generates messages")
         field(CALC,"A=2?AA+$P('%.1e',E)+BB+$P('%.1e',F):A")
-        field(INPA,"$(SYSTEM)$(PMP):SETSPOFF.VAL NPP NMS")
-        field(INPB,"$(SYSTEM)$(PMP):CHECKOFFP.VAL NPP NMS")
-        field(INPE,"$(SYSTEM)$(PMP):SENDOFFP.DRVH NPP NMS")
-        field(INPF,"$(SYSTEM)$(PMP):SENDOFFP.DRVL NPP NMS")
+        field(INPA,"$(device):SETSPOFF.VAL NPP NMS")
+        field(INPB,"$(device):CHECKOFFP.VAL NPP NMS")
+        field(INPE,"$(device):SENDOFFP.DRVH NPP NMS")
+        field(INPF,"$(device):SENDOFFP.DRVL NPP NMS")
         field(AA,"Off Spt must be < ")
         field(BB," & > ")
-        field(OUT,"$(SYSTEM)$(PMP):SPOPMSG.CC PP NMS")
+        field(OUT,"$(device):SPOPMSG.CC PP NMS")
         field(OOPT,"Every Time")
 }
 # Message to user about sending off set point pressure value
 # Probelm is with the CC message, in order to print values of E & F the calc
 # gets too long
-record(scalcout,"$(SYSTEM)$(PMP):SPOPMSG") {
+record(scalcout,"$(device):SPOPMSG") {
         field(DESC,"Generates messages")
         field(CALC,"A=1?BB:A=2?CC:B#0?AA:DD")
-        field(INPA,"$(SYSTEM)$(PMP):SETSPOFF.VAL NPP NMS")
-        field(INPB,"$(SYSTEM)$(PMP):CHECKOFFP.VAL NPP NMS")
+        field(INPA,"$(device):SETSPOFF.VAL NPP NMS")
+        field(INPB,"$(device):CHECKOFFP.VAL NPP NMS")
         field(AA,"Off Setpoint Sent")
         field(BB,"Off Spt must be 20% > than On")
         field(DD," ")
-        field(OUT,"$(SYSTEM)$(PMP):SPOFFMSG.VAL PP NMS")
+        field(OUT,"$(device):SPOFFMSG.VAL PP NMS")
         field(OOPT,"Every Time")
 }
-record(stringin, "$(SYSTEM)$(PMP):SPOFFMESSAGE")
+record(stringin, "$(device):SPOFFMESSAGE")
 {
 	field(DESC, "Display Off Spt Mesg")
 	field(INP, " ")
 }
-record(stringin, "$(SYSTEM)$(PMP):SPMESSAGE")
+record(stringin, "$(device):SPMESSAGE")
 {
 	field(DESC, "Display Spt Error Mesg")
 	field(INP, " ")
 }
+record(stringin, "$(device):HVERRMSG")
+{
+	field(DESC, "Display HV Error Mesg")
+	field(PINI, "YES")
+	field(INP, " ")
+}
+record(stringin, "$(device):STATUSERRMSG")
+{
+	field(DESC, "Display Status Error Msg")
+	field(PINI, "YES")
+	field(INP, " ")
+}
 
+##################
+# Error handling
+#---------------
+record(seq, "$(device):ERRSEQ")
+{
+    field(DESC, "Get Error if applicable")
+    field(SCAN, "Passive")
+    field(SELM, "Specified")
+    field(SELN, "1")
+    field(DOL1, "0")
+    field(LNK1, "$(device):ERR PP NMS")
+    field(DOL2, "$(device):ERRGET PP NMS")
+    field(LNK2, "$(device):ERR PP NMS")
+}
+
+record(longin, "$(device):ERRGET")
+{
+    field(DESC, "Get Error Code")
+    field(DTYP, "stream")
+    field(INP,  "@digitelQpc.proto err($(unit),$(SPLY)) $(port)")
+    field(SCAN, "Passive")
+}
+
+record(calcout, "$(device):ERRSEL")
+{
+    field(DESC, "Choose which error source")
+    field(INPA, "$(device):STA MS")
+    field(CALC, "A>=3?2:1")
+    field(OUT, "$(device):ERRSEQ.SELN PP MS")
+}
+
+#
+#% archiver 10 Monitor
+#% controldesk Error Code smon
+#
+record(mbbi, "$(device):ERR")
+{
+    field(DESC, "Error Code")
+    field(DTYP, "Soft Channel")
+    field(SCAN, "Passive")
+    field(ZRST, "OK")
+    field(ONST, "Too many cycles")
+    field(TWST, "High pressure")
+    field(THST, "High current")
+    field(FRST, "High pressure")
+    field(FVST, "Pump power")
+    field(SXST, "High current")
+    field(SVST, "Short circuit")
+    field(EIST, "Malfunction")
+    field(NIST, "Low voltage")
+    field(TEST, "Arc detect")
+    field(ELST, "11")
+    field(TVST, "12")
+    field(TTST, "13")
+    field(FTST, "14")
+    field(FFST, "15")
+    field(UNSV, "MINOR")
+    field(ZRSV, "NO_ALARM")
+    field(ONSV, "MINOR")
+    field(TWSV, "MINOR")
+    field(THSV, "MINOR")
+    field(FRSV, "MINOR")
+    field(FVSV, "MINOR")
+    field(SXSV, "MINOR")
+    field(SVSV, "MINOR")
+    field(EISV, "MINOR")
+    field(NISV, "MINOR")
+    field(TESV, "MINOR")
+    field(ELSV, "MINOR")
+    field(TVSV, "MINOR")
+    field(TTSV, "MINOR")
+    field(FTSV, "MINOR")
+    field(FFSV, "MINOR")
+}

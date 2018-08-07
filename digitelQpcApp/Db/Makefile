@@ -21,7 +21,8 @@ DB += digitelQpcTspDummy.template
 DB += digitelQpcIonpGroup.template
 DB += digitelQpcTspGroup.template
 DB += dummyIonp.template
-
+DB += digitelQPCController.template
+DB += vacuum-gamma-ion-pump.template
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
 # <anyname>_TEMPLATE = <templatename>
