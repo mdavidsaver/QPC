@@ -16,13 +16,25 @@ record(stringin, "$(device):CONTROLLER")
 
 
 ################################################################################
+# Text string on front panel
+#
+record(stringout, "$(device):SETTEXT")
+    {
+    field(DESC, "Text String")
+    field(VAL , "$(text=$(device))")
+    field(DTYP, "stream")
+    field(OUT,  "@vacuum-gamma-qpc.proto settext($(unit),$(SPLY),$(device)) $(port)")
+    field(PINI, "YES")
+    }
+
+################################################################################
 # Automatically Restart on power up
 #
 record(bo, "$(device):SETAUTOST")
 {
     field(DESC, "Auto Restart")
     field(DTYP, "stream")
-    field(OUT,  "@vacuum-gamma-qpc.proto setautost($(unit=01),$(SPLY)) $(port)")
+    field(OUT,  "@vacuum-gamma-qpc.proto setautost($(unit=01),$(SPLY),$(device)) $(port)")
     field(ZNAM, "No")
     field(ONAM, "Yes")
     field(DOL,  "0")
@@ -37,7 +49,7 @@ record(bi, "$(device):AUTOST")
     field(DESC, "Auto Restart")
     field(DTYP, "stream")
     field(INP,  "@vacuum-gamma-qpc.proto autost($(unit=01),$(SPLY)) $(port)")
-    field(SCAN, "Passive")
+	field(SCAN, "10 second")
     field(PINI, "YES")
     field(ZNAM, "No")
     field(ONAM, "Yes")
@@ -54,7 +66,7 @@ record(ai, "$(device):CAL") {
     field(DTYP, "stream")
 	field(PINI, "YES")
     field(INP,  "@vacuum-gamma-qpc.proto getcal($(unit=01),$(SPLY)) $(port)")
-    field(SCAN, "Passive")
+	field(SCAN, "10 second")
     field(LOPR, "0.0")
     field(HOPR, "9.99")
     field(PREC, "2")
@@ -120,9 +132,14 @@ record(bi,"$(device):STARTING")
     field(ONAM, "Starting")
 }
 
+######
+# Read the supply current.
+# Ideally this should be scanning at higher rate when HV is on
+# or perhaps disabled when HV is off.
+#
 record(ai, "$(device):I")
 {
-	field(DESC, "Reads Channel Current")
+	field(DESC, "Reads Supply Current")
 	field(SCAN, "5 second")
 #	field(PINI, "YES")
 	field(DTYP, "stream")
@@ -131,7 +148,7 @@ record(ai, "$(device):I")
 
 record(ai, "$(device):P")
 {
-	field(DESC, "Reads Channel Current")
+	field(DESC, "Reads Supply Pressure")
 	field(SCAN, "5 second")
 #	field(PINI, "YES")
 	field(DTYP, "stream")
@@ -140,12 +157,32 @@ record(ai, "$(device):P")
 
 record(ai, "$(device):V")
 {
-	field(DESC, "Reads Channel Current")
+	field(DESC, "Reads Supply Voltage")
 	field(SCAN, "5 second")
 #	field(PINI, "YES")
+    field(PREC, "0")
 	field(DTYP, "stream")
 	field(INP, "@vacuum-gamma-qpc.proto getVoltage($(unit=01),$(SPLY)) $(port)")
 }
+
+record(stringin, "$(device):SCAN")
+    {
+	field(DESC, "SCAN rates according to status")
+	field(VAL, "10 second")
+    }
+
+record(scalcout,"$(device):CALCSCAN")
+        {
+        field(DESC,"Generates SCAN rates re status")
+        field(SCAN,"Passive")
+        field(CALC,"A=1?BB:AA")
+        field(INPA,"$(device):ENABLED PP NMS")
+        field(AA,"10 second")
+        field(BB,"1 second")
+        field(OUT,"$(device):SCAN.VAL PP NMS")
+        field(OOPT,"On Change")
+        }
+
 
 ################################################################################
 # Get supply status
@@ -239,6 +276,7 @@ record(ai, "$(device):PUMPSIZE")
     {
 	field(DESC, "Reads Pump Size for pump $(SPLY)")
 	field(PINI, "YES")
+	field(SCAN, "10 second")
 	field(DTYP, "stream")
 	field(INP, "@vacuum-gamma-qpc.proto getPumpSize($(unit=01),$(SPLY)) $(port)")
 	field(EGU,"L/S")
@@ -246,6 +284,8 @@ record(ai, "$(device):PUMPSIZE")
 record(ao, "$(device):SETPUMPSIZE") {
 	field(DESC, "Sets Pump Size (L/S) for Pump $(SPLY)")
 	field(DTYP, "stream")
+	field(PINI, "YES")
+	field(DOL, "$(SIZE=500)")
 	field(OUT, "@vacuum-gamma-qpc.proto setPumpSize($(unit=01),$(SPLY)) $(port)")
 	field(OMSL, "supervisory")
 	field(EGU,"L/S")
@@ -256,31 +296,62 @@ record(ao, "$(device):SETPUMPSIZE") {
 # Pump set point readbacks for on/off pressures and relay/digital out status
 # These records are really only good for 1 set point but the database is good
 # for 1 of the controllers pump supplies.
-record(ai, "$(device):SPON"){
-	field(DESC, "Reads Pump on press for pump $(SPLY)")
-	#field(PINI, "YES")
+#
+
+# SPFUNCTION is the 'F' argument returned from the 3B cmd (See QPC User Manual)
+#% archiver 10 Monitor
+#% controldesk Error Code smon
+#
+record(mbbi, "$(device):SPFUNCTION")
+    {
+    field(DESC, "Setpoint Function")
+    field(DTYP, "Soft Channel")
+    field(SCAN, "Passive")
+    field(ZRST, "OFF")
+    field(ONST, "Pressure Setpoint")
+    field(TWST, "HV Error")
+    field(THST, "HV Indicator")
+    }
+
+##
+# This record reads the response to the 3B command and pushes the returned values directly to the
+# respective records, via the protocol file.
+#
+record(ai, "$(device):GETSP")
+    {
+	field(DESC, "Reads setpoints and status")
+	field(PINI, "YES")
 	field(SCAN, "5 second")
 	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getOnPressSpt($(unit=01),$(SPLY)) $(port)")
+	field(INP, "@vacuum-gamma-qpc.proto getSetpoints($(unit=01),$(SPLY),$(device)) $(port)")
+    field(PREC,"1")
+    }
+
+record(ai, "$(device):SPON"){
+	field(DESC, "Reads Pump on press for pump $(SPLY)")
+	##field(PINI, "YES")
+	#field(SCAN, "5 second")
+	#field(DTYP, "stream")
+	#field(INP, "@vacuum-gamma-qpc.proto getOnPressSpt($(unit=01),$(SPLY)) $(port)")
     field(PREC,"1")
 }
 record(ai, "$(device):SPOFF"){
 	field(DESC, "Reads Pump off press for pump")
-	#field(PINI, "YES")
-	field(SCAN, "5 second")
-	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getOffPressSpt($(unit=01),$(SPLY)) $(port)")
+	##field(PINI, "YES")
+	#field(SCAN, "5 second")
+	#field(DTYP, "stream")
+	#field(INP, "@vacuum-gamma-qpc.proto getOffPressSpt($(unit=01),$(SPLY)) $(port)")
     field(PREC,"1")
 }
 record(bi, "$(device):SPSTA") {
-	field(DESC, "Read Spt$(SPT) status for pump")
-	field(PINI, "YES")
-	field(SCAN, "5 second")
-	field(DTYP, "stream")
-	field(INP, "@vacuum-gamma-qpc.proto getSptStatus($(unit=01),$(SPLY)) $(port)")
+	field(DESC, "Protection Relay status for pump")
+	#field(PINI, "YES")
+	#field(SCAN, "5 second")
+	#field(DTYP, "stream")
+	#field(INP, "@vacuum-gamma-qpc.proto getSptStatus($(unit=01),$(SPLY)) $(port)")
 	field(OSV, "MAJOR")
-	field(ZNAM, "Setpoint $(SPT) Off")
-	field(ONAM, "Setpoint $(SPT) On")
+	field(ZNAM, "Off")
+	field(ONAM, "On")
 }
 ###################################################################
 # Pump set point on pressure set

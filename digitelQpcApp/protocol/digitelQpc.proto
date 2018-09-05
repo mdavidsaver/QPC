@@ -52,8 +52,8 @@ sethv     { out "~ \$1 %{38|37} \$2 %01<sum8>"  ; in "\$1 OK %*2x %0<sum8>"     
 current   { out "~ \$1 0A \$2 %01<sum8>"        ; in "\$1 OK %*2x %g %*{AMPS|Amps} %0<sum8>"; }
 pressure  { out "~ \$1 0B \$2 %01<sum8>"        ; in "\$1 OK %*2x %g %*s %0<sum8>"          ; }
 voltage   { out "~ \$1 0C \$2 %01<sum8>"        ; in "\$1 OK %*2x %d %0<sum8>"              ; }
-status    { out "~ \$1 0D \$2, 00 %01<sum8>"    ; in "\$1 OK %*2x %2d"                      ; @mismatch {in "\$1 OK %*2x %(\$3.VAL)s %0<sum8>";} }
-err       { out "~ \$1 0D \$2, 00 %01<sum8>"    ; in "\$1 OK %*2x %*[^0-9]%d %0<sum8>"      ; }
+status    { out "~ \$1 0D \$2,00 %01<sum8>"     ; in "\$1 OK %*2x %2d"                      ; @mismatch {in "\$1 OK %*2x %(\$3.VAL)s %0<sum8>";} }
+err       { out "~ \$1 0D \$2,00 %01<sum8>"     ; in "\$1 OK %*2x %*[^0-9]%d %0<sum8>"      ; }
 size      { out "~ \$1 11 \$2 %01<sum8>"        ; in "\$1 OK %*2x %d L/S %0<sum8>"          ; }
 cal       { out "~ \$1 1D \$2 %01<sum8>"        ; in "\$1 OK %*2x %f %0<sum8>"              ; }
 # <== got to here:
@@ -68,7 +68,7 @@ cal       { out "~ \$1 1D \$2 %01<sum8>"        ; in "\$1 OK %*2x %f %0<sum8>"  
 # N
 # N - setpoint number (1-8, but specifically 1-4 for relays)
 getsps    { out "~ \$1 3B %(\$2:SPNUM\$3)1d %01<sum8>";
-			in  "\$1 OK %*2x %*i, %*i, %*i,%(\$2:SP\$3ON.VAL)g,%(\$2:SP\$3OFF.VAL)g,%(\$2:SP\$3STATE)i %0<sum8>";
+			in  "\$1 OK %*2x %*i,%*i,%*i,%(\$2:SP\$3ON.VAL)g,%(\$2:SP\$3OFF.VAL)g,%(\$2:SP\$3STATE)i %0<sum8>";
 			@mismatch { in "%*d %*{OK|ER} %*2x %(\$2:INFO)#s %0<sum8>"; };
 		  }
 		  
@@ -84,8 +84,8 @@ getsps    { out "~ \$1 3B %(\$2:SPNUM\$3)1d %01<sum8>";
 # N - setpoint number (1-8, but specifically 1-4 for relays)
 # F - function: 0 = Off, 1 = Pressure Setpoint, 2 = HV Errors, 3 = HV On/Off Indicator
 #
-setsps    { out "~ \$1 3B %(F)1d, 1, %(C)1d, %(A)2.2E, %(B)2.2E %01<sum8>";
-            in  "\$1 OK %*2x %*i, %*i, %*i,%(\$2:SP\$3ON.VAL)g,%(\$2:SP\$3OFF.VAL)g,%(\$2:SP\$3STATE)i %0<sum8>";
+setsps    { out "~ \$1 3B %(F)1d,1,%(C)1d,%(A)2.2E,%(B)2.2E %01<sum8>";
+            in  "\$1 OK %*2x %*i,%*i,%*i,%(\$2:SP\$3ON.VAL)g,%(\$2:SP\$3OFF.VAL)g,%(\$2:SP\$3STATE)i %0<sum8>";
             @mismatch { in "%*d %*{OK|ER} %*2x %(\$2:INFO)#s %0<sum8>"; };
             @init { getsps; } 
           }
