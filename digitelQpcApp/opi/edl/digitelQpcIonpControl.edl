@@ -4,7 +4,7 @@ major 4
 minor 0
 release 1
 x 3216
-y 23
+y 46
 w 328
 h 544
 font "arial-medium-r-16.0"
@@ -88,7 +88,7 @@ release 1
 x 16
 y 128
 w 42
-h 22
+h 16
 font "arial-medium-r-14.0"
 fgColor index 14
 bgColor index 0
@@ -131,7 +131,7 @@ release 1
 x 16
 y 156
 w 72
-h 22
+h 16
 font "arial-medium-r-14.0"
 fgColor index 14
 bgColor index 0
@@ -659,7 +659,7 @@ release 1
 x 16
 y 212
 w 48
-h 22
+h 16
 font "arial-medium-r-14.0"
 fgColor index 14
 bgColor index 0
@@ -730,7 +730,7 @@ x 112
 y 304
 w 88
 h 22
-controlPv "$(device):V"
+controlPv "$(device):GETV"
 fgColor index 16
 bgColor index 12
 fill
@@ -1017,7 +1017,7 @@ release 1
 x 176
 y 212
 w 60
-h 22
+h 16
 font "arial-medium-r-14.0"
 fgColor index 14
 bgColor index 0
@@ -1100,7 +1100,7 @@ release 1
 x 16
 y 184
 w 50
-h 22
+h 16
 font "arial-medium-r-14.0"
 fgColor index 14
 bgColor index 0

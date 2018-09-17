@@ -92,10 +92,17 @@ getVoltage {
 	ExtraInput = Ignore;
 }
 
+getVoltageSetpoint {
+           out "~ \$1 54 \$2 00";
+           in "\$1 OK %2X %d %*2c";
+           ExtraInput = Ignore;
+           }
+
 setVoltage {
            out "~ \$1 53 \$2,%d 00";
            in "\$1 OK %2X %*2c";
-           @init { getVoltage; }
+           # Initial voltage setpoint now via template macro
+           # @init { getVoltage; }
            ExtraInput = Ignore;
            }
 
@@ -112,7 +119,7 @@ setVoltage {
 # Otherwise this protocol sends back a string as is done here
 getStatus {
 	out "~ \$1 0D \$2, 00 00";
-	in "\$1 OK %2x %*2X";
+	in "\$1 OK %*2x %d";
 	@mismatch {in "\$1 OK %2c %*2X";}
 	ExtraInput = Ignore;
 }
@@ -219,9 +226,12 @@ setSetpoints
 	out "~ \$1 3B %(A)1d,1,%(B)1d,%(C)G,%(D)G 00";
 	in "\$1 OK %*2X %*i,%*i,%*i,%(\$2:SPON)G,%(\$2:SPOFF)G,%(\$2:SPSTA)i %*2c";
 	@mismatch { in "ER 08 *ERROR: %(\$2:SPMESSAGE.VAL)36c";}
-    @init { out "~ \$1 3B %(A)1d 00";
-             in "\$1 OK %2X %*i,%*i,%*i,%(\$2:SETSPON.VAL)G,%(\$2:SETSPOFF.VAL)G,%*i %*2c";
-          }
+##
+# This will initialise the setpoint to the values presently in controller.
+# On IOC reboot, we should set the setpoints to the default startup values given by EPICS.
+#    @init { out "~ \$1 3B %(A)1d 00";
+#             in "\$1 OK %2X %*i,%*i,%*i,%(\$2:SETSPON.VAL)G,%(\$2:SETSPOFF.VAL)G,%*i %*2c";
+#          }
 	ExtraInput = Ignore;
     }
 
