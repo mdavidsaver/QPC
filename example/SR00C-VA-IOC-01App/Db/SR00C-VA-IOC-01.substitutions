@@ -1,0 +1,52 @@
+#############################################################################
+# Digitel QPC pump controllers
+#
+# substitutions:
+# device  - device name
+# port    - serial port (device manager port number)
+# unit    - unit number for multi-drop serial (5 by default)
+#
+# Controller
+#
+
+#file digitelQpc.template
+#{
+#pattern { device          , port   , unit }
+#	    { SR00S-VA-QPC-01 , ser0   , 01   }
+#}
+
+#
+# Ion pumps
+#
+# Parameters:
+# device  - Full device EPICS base name
+# display - Display text (limited to 14 characters)
+# port    - serial port identifier
+# unit    - Unit number (normally "01")
+# pump    - Pump number (1 | 2 | 3 | 4)
+# size    - Size (l/s)
+# sp1on   -
+
+#file digitelQpcIonp.template
+#{
+#pattern { device           , display         , port  , unit , pump , size  , spon    , spoff}
+#        { SR00S-VA-IONP-01 , "SR00S-IONP-01" , ser0  , 01   , 1    , 300   , 1.0E-8   , 2.0E-8}
+##        { SR00S-VA-IONP-02 , "SR00S-IONP-02" , ser0  , 01   , 2    , 300  , 1.0E-8   , 2.0E-8}
+##        { SR00S-VA-IONP-03 , "SR00S-IONP-03" , ser0  , 01   , 3    , 300  , 1.0E-8   , 2.0E-8}
+##        { SR00S-VA-IONP-04 , "SR00S-IONP-04" , ser0  , 01   , 4    , 300  , 1.0E-8   , 2.0E-8}
+#}
+
+file digitelQPCController.template
+    {
+    pattern { QPC              , unit, port  , punits }
+            { "SR00S-VA-QPC-01", "01", "ser0", "MBAR" }
+    }
+
+file digitelQpcIonp.template
+    {
+    pattern { device             ,controller       , SPLY , SPT , SIZE  , HV    , port , unit,   spon   , spoff  }
+            { "SR00S-VA-IONP-01" ,"SR00S-VA-QPC-01", "1"  , "1" , "300" , 3000  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+            { "SR00S-VA-IONP-02" ,"SR00S-VA-QPC-01", "2"  , "2" , "300" , 3100  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+            { "SR00S-VA-IONP-03" ,"SR00S-VA-QPC-01", "3"  , "3" , "300" , 3200  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+            { "SR00S-VA-IONP-04" ,"SR00S-VA-QPC-01", "4"  , "4" , "300" , 3300  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+    }
