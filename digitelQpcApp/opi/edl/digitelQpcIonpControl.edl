@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 3216
-y 46
+x 3303
+y 90
 w 328
 h 544
 font "arial-medium-r-16.0"
@@ -1057,7 +1057,7 @@ minor 0
 release 0
 x 96
 y 128
-w 72
+w 148
 h 22
 controlPv "$(device):STA"
 fgColor index 16
@@ -1078,7 +1078,7 @@ minor 0
 release 0
 x 96
 y 156
-w 72
+w 148
 h 22
 controlPv "$(device):ERR"
 fgColor index 16
