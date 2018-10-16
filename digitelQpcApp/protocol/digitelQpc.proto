@@ -93,7 +93,7 @@ getVoltage {
 }
 
 getVoltageSetpoint {
-           out "~ \$1 54 \$2 00";
+           out "~ \$1 53 \$2 00";
            in "\$1 OK %2X %d %*2c";
            ExtraInput = Ignore;
            }
@@ -235,3 +235,25 @@ setSetpoints
 	ExtraInput = Ignore;
     }
 
+##
+# Digital Input assignment
+#
+# CMD 58 N,S,F - N = digital input channel, S = pump (1-4), F = Function (00 => Off, 01 => HV Interlock, 02 => TSP1 Ilk, 03 => TSP2 ilk)
+# $1 => Unit, $2 => Pump, $3 => Digital inp chan, $4 => Function, $5 => PV base name for pump
+#
+getDigitalInput
+    {
+    out "~ \$1 58 \$2 00";
+    in  "%*2c OK %(\$5:FUNCTION)d,%(\$5:DIGIN)d %*2c";
+    }
+
+##
+# Digital Input assignment
+#
+# CMD 58 N,S,F - N = digital input channel, S = pump (1-4), F = Function (00 => Off, 01 => HV Interlock, 02 => TSP1 Ilk, 03 => TSP2 ilk)
+#
+setDigitalInput
+    {
+    out "~ \$1 58 \$3,\$2,\$4 00";
+    in  "%*2c OK %*d,%(\$5:DIGIN)d %*2c";
+    }
