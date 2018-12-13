@@ -31,28 +31,28 @@ class digitelQpcIonp(_digitelQpcIonpTemplate, digitelQpcPump):
     __doc__ = _digitelQpcIonpTemplate.__doc__
 
     # Just pass the arguments straight through
-    def __init__(self, QPC, **args):
+    def __init__(self, QPC, 
+    	SIZE=500, HV=3000, alh="None", text="$(device)",
+    	**args):
         # args['controller'] = QPC.args['controller']
-        args['SPLY'] = "%02d" % args['SPLY']
-        args['SPT'] = "%02d" % args['SPT']
-        args['SIZE'] = "%d" % args['SIZE']
-        args['HV'] = "%d" % args['HV']
+        args['SPLY'] = "%02d" % int(args['SPLY'])
+        args['SPT'] = "%02d" % int(args['SPT'])
+        args['SIZE'] = "%d" % int(SIZE)
+        args['HV'] = "%d" % int(HV)
         args['port'] = QPC.args['port']
         args['unit'] = QPC.args['unit']
-        args['spon'] = "%1.2G" % args['spon']
-        args['spoff'] = "%1.2G" % args['spoff']
-
+        args['spon'] = "%1.2G" % float(args['spon'])
+        args['spoff'] = "%1.2G" % float(args['spoff'])
+		
         self.__super.__init__(**args)
 
-        # __init__ arguments
-        ArgInfo = makeArgInfo(__init__,
-            QPC = Ident ('digitelQPC object', QPC)) + \
-            _digitelQpcIonpTemplate.ArgInfo.filtered(without = ['port', 'unit'])
-
-
-class digitelQpcIonpGroup(AutoSubstitution):
-    TemplateFile = 'digitelQpcIonpGroup.template'
-
-
-class dummyIonp(AutoSubstitution):
-    TemplateFile = 'dummyIonp.template'
+    # __init__ arguments
+    ArgInfo = makeArgInfo(__init__,
+        QPC	=Ident('digitelQPC object', digitelQpc),
+        SPLY=Simple('Pump supply number', int),
+        SPT	=Simple('Set point number for this pump', int),
+        SIZE=Simple('Pump Size (L/S)', int),
+        HV  =Simple('Target voltage', int),
+        text=Simple('Text to display in the ion pump controller window', str),
+        alh =Simple('alarm handler tag (Defaults to None)', str) ) + \
+        _digitelQpcIonpTemplate.ArgInfo.filtered(without=["port", "unit", "SIZE", "HV", "text", "alh"])
