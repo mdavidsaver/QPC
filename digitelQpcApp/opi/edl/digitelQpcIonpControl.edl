@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 3303
-y 90
+x 3307
+y 108
 w 328
 h 544
 font "arial-medium-r-16.0"
@@ -525,7 +525,7 @@ offColor index 3
 topShadowColor index 1
 botShadowColor index 11
 controlPv "$(device):SETHV"
-releaseValue "On"
+releaseValue "Start"
 onLabel "Start"
 offLabel "Start"
 3d
@@ -551,7 +551,7 @@ offColor index 3
 topShadowColor index 1
 botShadowColor index 11
 controlPv "$(device):SETHV"
-pressValue "Off"
+pressValue "Stop"
 onLabel "Stop"
 offLabel "Stop"
 3d
@@ -1059,7 +1059,7 @@ x 96
 y 128
 w 148
 h 22
-controlPv "$(device):STA"
+controlPv "$(device):QPCSTA"
 fgColor index 16
 fgAlarm
 bgColor index 12
