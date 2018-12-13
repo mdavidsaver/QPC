@@ -12,7 +12,6 @@
 #% macro, hv,   default HV setting
 #% macro, spon, setpoint on
 #% macro, spoff, setpoint off
-#% macro, display, label on controller screen
 #% macro, alh,  alarm handler tag (Defaults to None) c.f. mp49's commit 80833
 #% macro, text, Text to display in the ion pump controller window.
 ################################################################################
@@ -26,7 +25,7 @@
 # % gui, $(name=), boyembed, digitelQpcApp_opi/ionp_embed.opi, device=$(device), desc=$(device), name=$(name=)
 
 # These define what PVs a valve detail screen should contain
-# % gui, $(name=), readback, Status,   $(device):STA
+# % gui, $(name=), readback, Status,   $(device):QPCSTA
 # % gui, $(name=), readback, Error Code,  $(device):ERR
 # % gui, $(name=), readback, Voltage,  $(device):V
 # % gui, $(name=), readback, Current,  $(device):I
@@ -47,12 +46,12 @@
 # SPT           - Set point number for this pump
 # SPLY          - Which pump supply number
 
-record(stringin, "$(device):CONTROLLER")
-{
-	field(DESC, "QPC Controller")
-	field(PINI, "YES")
-	field(VAL, $(controller))
-}
+#record(stringin, "$(device):CONTROLLER")
+#{
+#	field(DESC, "QPC Controller")
+#	field(PINI, "YES")
+#	field(VAL, $(controller))
+#}
 
 
 ################################################################################
@@ -170,8 +169,8 @@ record(bo, "$(device):SETHV")
     field(DESC, "HV On / Off")
     field(DTYP, "stream")
     field(OUT,  "@digitelQpc.proto sethv($(unit=01),$(SPLY),$(device)) $(port)")
-    field(ZNAM, "Off")
-    field(ONAM, "On")
+    field(ZNAM, "Stop")
+    field(ONAM, "Start")
     field(DOL,  "0")
     field(PINI, "YES")
 }
@@ -242,8 +241,8 @@ record(scalcout,"$(device):CALCSCAN")
 #
 #% archiver 10 Monitor
 #% controldesk Supply Status smon
-#% $(alh=None) $SEVRCOMMAND UP_ANY dls-alh-handler.py $(device):STA
-record(mbbi, "$(device):STA")
+#% $(alh=None) $SEVRCOMMAND UP_ANY dls-alh-handler.py $(device):QPCSTA
+record(mbbi, "$(device):QPCSTA")
 {
     field(DESC, "Supply Status")
     field(DTYP, "stream")
@@ -282,6 +281,62 @@ record(mbbi, "$(device):STA")
     field(TTSV, "MAJOR")
     field(FTSV, "MAJOR")
     field(FFSV, "MAJOR")
+    field(FLNK, "$(device):TRANSSTA")
+}
+record(calcout, "$(device):TRANSSTA")
+{
+    field(DESC, "Translate QPC STA to VacSpace STA")
+    field(INPA, "$(device):QPCSTA CP MS")
+    field(CALC, "(A=0)?2:((A=1)||(A=2)?4:((A=3)?5:6))")
+    field(OUT, "$(device):STA PP")
+    field(FLNK, "$(device):STA")
+}
+
+################################################################################
+# Supply status compatibility layer
+# This is to facilitate mixing with vacuumSpace records
+#
+#% archiver 10 Monitor
+#% controldesk Supply Status smon
+#% $(alh=None) $SEVRCOMMAND UP_ANY dls-alh-handler.py $(device):STA
+record(mbbi, "$(device):STA")
+{
+    field(DESC, "Supply Status (compatible)")
+    field(DTYP, "Soft Channel")
+    field(INP,  "$(device):TRANSSTA PP MS")
+    field(ZRST, "Unknown")
+    field(ONST, "Waiting")
+    field(TWST, "Standby")
+    field(THST, "Safe-Conn")
+    field(FRST, "Running")
+    field(FVST, "Cool Down")
+    field(SXST, "Pump Error")
+    field(SVST, "HV Switched Off")
+    field(EIST, "Interlock")
+    field(NIST, "Shut Down")
+    field(TEST, "Calibration")
+    field(ELST, "Invalid")
+    field(TVST, "Invalid")
+    field(TTST, "Invalid")
+    field(FTST, "Invalid")
+    field(FFST, "Invalid")
+    field(UNSV, "MAJOR")
+    field(ZRSV, "MAJOR")
+    field(ONSV, "MAJOR")
+    field(TWSV, "MAJOR")
+    field(THSV, "MAJOR")
+    field(FRSV, "NO_ALARM")
+    field(FVSV, "MINOR")
+    field(SXSV, "MAJOR")
+    field(SVSV, "MAJOR")
+    field(EISV, "MAJOR")
+    field(NISV, "MAJOR")
+    field(TESV, "MAJOR")
+    field(ELSV, "MAJOR")
+    field(TVSV, "MAJOR")
+    field(TTSV, "MAJOR")
+    field(FTSV, "MAJOR")
+    field(FFSV, "MAJOR")
     field(FLNK, "$(device):ERRSEL")
 }
 
@@ -298,7 +353,7 @@ record(calcout, "$(device):CALCENABLED")
 {
     field(DESC, "Reads channel HV status.")
     field(SCAN, "2 second")
-    field(INPA, "$(device):STA PP MS")
+    field(INPA, "$(device):QPCSTA PP MS")
     field(CALC, "(A>=1)&&(A<=2)?1:0")
     field(OUT, "$(device):ENABLED PP")
 }
@@ -537,7 +592,7 @@ record(longin, "$(device):ERRGET")
 record(calcout, "$(device):ERRSEL")
 {
     field(DESC, "Choose which error source")
-    field(INPA, "$(device):STA MS")
+    field(INPA, "$(device):QPCSTA MS")
     field(CALC, "A>=3?2:1")
     field(OUT, "$(device):ERRSEQ.SELN PP MS")
 }
