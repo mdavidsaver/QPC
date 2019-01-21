@@ -138,6 +138,20 @@ record(ai, "$(device):GETV") {
     field(PREC, "0")
 }
 
+# If readback HV is less than sa 100V then assume HV is off
+# This is the only way to get the real HV status, especially
+# as we must not SETHV on IOC startup
+# (PINI must be OFF to avoid stopping the pump on IOC reboot)
+record(calcout, "$(device):ISON")
+{
+    field(DESC, "Determine whether HV is ON by V readback")
+    field(INPA, "$(device):V CP MS")
+    field(CALC, "(A<100)?0:1")
+    field(OUT, "$(device):STA PP")
+    field(FLNK, "$(device):STA")
+}
+
+
 ################################################################################
 # Set target output voltage
 # SPLY - Supply (1-4)
@@ -171,8 +185,8 @@ record(bo, "$(device):SETHV")
     field(OUT,  "@digitelQpc.proto sethv($(unit=01),$(SPLY),$(device)) $(port)")
     field(ZNAM, "Stop")
     field(ONAM, "Start")
-    field(DOL,  "0")
-    field(PINI, "YES")
+    field(DOL,  "$(device):ISON PP")
+    field(PINI, "NO")
 }
 
 record(bi,"$(device):STARTING")
