@@ -1811,7 +1811,7 @@ $(pv_value)</tooltip>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
-    <height>81</height>
+    <height>113</height>
     <lock_children>false</lock_children>
     <macros>
       <include_parent_macros>true</include_parent_macros>
@@ -1832,113 +1832,7 @@ $(pv_value)</tooltip>
     <width>313</width>
     <wuid>468aa3ab:15de00f404a:-751f</wuid>
     <x>8</x>
-    <y>448</y>
-    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-      <actions hook="false" hook_all="false">
-        <action type="EXECUTE_JAVASCRIPT">
-          <path></path>
-          <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);ScriptUtil.closeAssociatedOPI(widget);]]></scriptText>
-          <embedded>true</embedded>
-          <description></description>
-        </action>
-      </actions>
-      <alarm_pulsing>false</alarm_pulsing>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <background_color>
-        <color name="Controller: BG" red="205" green="205" blue="205" />
-      </background_color>
-      <border_alarm_sensitive>false</border_alarm_sensitive>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <border_style>0</border_style>
-      <border_width>1</border_width>
-      <enabled>true</enabled>
-      <font>
-        <fontdata fontName="liberation sans" height="14" style="0" pixels="true" />
-      </font>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <foreground_color>
-        <color name="Exit: FG" red="196" green="0" blue="196" />
-      </foreground_color>
-      <height>25</height>
-      <image></image>
-      <name>EDM Exit Button</name>
-      <push_action_index>0</push_action_index>
-      <pv_name></pv_name>
-      <pv_value />
-      <rules />
-      <scale_options>
-        <width_scalable>true</width_scalable>
-        <height_scalable>true</height_scalable>
-        <keep_wh_ratio>false</keep_wh_ratio>
-      </scale_options>
-      <scripts />
-      <style>0</style>
-      <text>Exit</text>
-      <toggle_button>false</toggle_button>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-      <visible>true</visible>
-      <widget_type>Action Button</widget_type>
-      <width>65</width>
-      <wuid>468aa3ab:15de00f404a:-751d</wuid>
-      <x>248</x>
-      <y>32</y>
-    </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-      <actions hook="false" hook_all="false">
-        <action type="EXECUTE_CMD">
-          <command>strip.sh $(device):PLOG log_mbar</command>
-          <command_directory>$(opi.dir)</command_directory>
-          <wait_time>10</wait_time>
-          <description></description>
-        </action>
-      </actions>
-      <alarm_pulsing>false</alarm_pulsing>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <background_color>
-        <color name="Controller: BG" red="205" green="205" blue="205" />
-      </background_color>
-      <border_alarm_sensitive>false</border_alarm_sensitive>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <border_style>0</border_style>
-      <border_width>1</border_width>
-      <enabled>true</enabled>
-      <font>
-        <fontdata fontName="liberation sans" height="14" style="0" pixels="true" />
-      </font>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <foreground_color>
-        <color name="Related Display: FG" red="128" green="64" blue="0" />
-      </foreground_color>
-      <height>25</height>
-      <image></image>
-      <name>EDM shell command</name>
-      <push_action_index>0</push_action_index>
-      <pv_name></pv_name>
-      <pv_value />
-      <rules />
-      <scale_options>
-        <width_scalable>true</width_scalable>
-        <height_scalable>true</height_scalable>
-        <keep_wh_ratio>false</keep_wh_ratio>
-      </scale_options>
-      <scripts />
-      <style>0</style>
-      <text>Graph</text>
-      <toggle_button>false</toggle_button>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-      <visible>true</visible>
-      <widget_type>Action Button</widget_type>
-      <width>65</width>
-      <wuid>468aa3ab:15de00f404a:-751c</wuid>
-      <x>248</x>
-      <y>0</y>
-    </widget>
+    <y>432</y>
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
       <actions hook="false" hook_all="false" />
       <background_color>
@@ -1957,7 +1851,154 @@ $(pv_value)</tooltip>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
-      <height>78</height>
+      <height>57</height>
+      <lock_children>true</lock_children>
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <name>Grouping Container_1</name>
+      <rules />
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <scripts />
+      <show_scrollbar>false</show_scrollbar>
+      <tooltip></tooltip>
+      <transparent>false</transparent>
+      <visible>true</visible>
+      <widget_type>Grouping Container</widget_type>
+      <width>65</width>
+      <wuid>4ed2b111:168704203fe:-7ed1</wuid>
+      <x>240</x>
+      <y>32</y>
+      <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+        <actions hook="false" hook_all="false">
+          <action type="EXECUTE_JAVASCRIPT">
+            <path></path>
+            <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);ScriptUtil.closeAssociatedOPI(widget);]]></scriptText>
+            <embedded>true</embedded>
+            <description></description>
+          </action>
+        </actions>
+        <alarm_pulsing>false</alarm_pulsing>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <background_color>
+          <color name="Controller: BG" red="205" green="205" blue="205" />
+        </background_color>
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <enabled>true</enabled>
+        <font>
+          <fontdata fontName="liberation sans" height="14" style="0" pixels="true" />
+        </font>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <foreground_color>
+          <color name="Exit: FG" red="196" green="0" blue="196" />
+        </foreground_color>
+        <height>25</height>
+        <image></image>
+        <name>EDM Exit Button</name>
+        <push_action_index>0</push_action_index>
+        <pv_name></pv_name>
+        <pv_value />
+        <rules />
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <scripts />
+        <style>0</style>
+        <text>Exit</text>
+        <toggle_button>false</toggle_button>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <visible>true</visible>
+        <widget_type>Action Button</widget_type>
+        <width>65</width>
+        <wuid>468aa3ab:15de00f404a:-751d</wuid>
+        <x>0</x>
+        <y>32</y>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+        <actions hook="false" hook_all="false">
+          <action type="EXECUTE_CMD">
+            <command>strip.sh $(device):PLOG log_mbar</command>
+            <command_directory>$(opi.dir)</command_directory>
+            <wait_time>10</wait_time>
+            <description></description>
+          </action>
+        </actions>
+        <alarm_pulsing>false</alarm_pulsing>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <background_color>
+          <color name="Controller: BG" red="205" green="205" blue="205" />
+        </background_color>
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <enabled>true</enabled>
+        <font>
+          <fontdata fontName="liberation sans" height="14" style="0" pixels="true" />
+        </font>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <foreground_color>
+          <color name="Related Display: FG" red="128" green="64" blue="0" />
+        </foreground_color>
+        <height>25</height>
+        <image></image>
+        <name>EDM shell command</name>
+        <push_action_index>0</push_action_index>
+        <pv_name></pv_name>
+        <pv_value />
+        <rules />
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>false</keep_wh_ratio>
+        </scale_options>
+        <scripts />
+        <style>0</style>
+        <text>Graph</text>
+        <toggle_button>false</toggle_button>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <visible>true</visible>
+        <widget_type>Action Button</widget_type>
+        <width>65</width>
+        <wuid>468aa3ab:15de00f404a:-751c</wuid>
+        <x>0</x>
+        <y>0</y>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0.0">
+      <actions hook="false" hook_all="false" />
+      <background_color>
+        <color red="166" green="166" blue="166" />
+      </background_color>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <border_style>14</border_style>
+      <border_width>1</border_width>
+      <enabled>true</enabled>
+      <fc>false</fc>
+      <font>
+        <opifont.name fontName="Liberation Sans" height="15" style="0" pixels="true">Default</opifont.name>
+      </font>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
+      <height>89</height>
       <lock_children>false</lock_children>
       <macros>
         <include_parent_macros>true</include_parent_macros>
@@ -1972,71 +2013,13 @@ $(pv_value)</tooltip>
       <scripts />
       <show_scrollbar>false</show_scrollbar>
       <tooltip></tooltip>
-      <transparent>false</transparent>
+      <transparent>true</transparent>
       <visible>true</visible>
       <widget_type>Grouping Container</widget_type>
-      <width>153</width>
+      <width>225</width>
       <wuid>-5b4936eb:16860fb1d72:-7ee5</wuid>
-      <x>8</x>
-      <y>0</y>
-      <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
-        <actions hook="false" hook_all="false" />
-        <alarm_pulsing>false</alarm_pulsing>
-        <alpha>255</alpha>
-        <anti_alias>true</anti_alias>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <background_color>
-          <color name="Grey 65%" red="166" green="166" blue="166" />
-        </background_color>
-        <bg_gradient_color>
-          <color red="255" green="255" blue="255" />
-        </bg_gradient_color>
-        <border_alarm_sensitive>false</border_alarm_sensitive>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <border_style>0</border_style>
-        <border_width>1</border_width>
-        <enabled>true</enabled>
-        <fg_gradient_color>
-          <color red="255" green="255" blue="255" />
-        </fg_gradient_color>
-        <fill_level>0.0</fill_level>
-        <font>
-          <opifont.name fontName="Liberation Sans" height="15" style="0" pixels="true">Default</opifont.name>
-        </font>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-        <foreground_color>
-          <color red="255" green="0" blue="0" />
-        </foreground_color>
-        <gradient>false</gradient>
-        <height>69</height>
-        <horizontal_fill>true</horizontal_fill>
-        <line_color>
-          <color name="Black" red="0" green="0" blue="0" />
-        </line_color>
-        <line_style>0</line_style>
-        <line_width>1</line_width>
-        <name>EDM Rectangle</name>
-        <pv_name></pv_name>
-        <pv_value />
-        <rules />
-        <scale_options>
-          <width_scalable>true</width_scalable>
-          <height_scalable>true</height_scalable>
-          <keep_wh_ratio>false</keep_wh_ratio>
-        </scale_options>
-        <scripts />
-        <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-        <transparent>false</transparent>
-        <visible>true</visible>
-        <widget_type>Rectangle</widget_type>
-        <width>153</width>
-        <wuid>468aa3ab:15de00f404a:-751e</wuid>
-        <x>0</x>
-        <y>9</y>
-      </widget>
+      <x>0</x>
+      <y>16</y>
       <widget typeId="org.csstudio.opibuilder.widgets.choiceButton" version="1.0.0">
         <actions hook="false" hook_all="false" />
         <alarm_pulsing>false</alarm_pulsing>
@@ -2085,7 +2068,7 @@ $(pv_value)</tooltip>
         <width>121</width>
         <wuid>-5b4936eb:16860fb1d72:-7f05</wuid>
         <x>24</x>
-        <y>27</y>
+        <y>24</y>
       </widget>
       <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
         <actions hook="false" hook_all="false" />
@@ -2126,6 +2109,64 @@ $(pv_value)</tooltip>
         <wuid>468aa3ab:15de00f404a:-7518</wuid>
         <x>1</x>
         <y>0</y>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0.0">
+        <actions hook="false" hook_all="false" />
+        <alarm_pulsing>false</alarm_pulsing>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <background_color>
+          <color red="240" green="240" blue="240" />
+        </background_color>
+        <bit>-1</bit>
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <border_color>
+          <color name="Black" red="0" green="0" blue="0" />
+        </border_color>
+        <border_style>0</border_style>
+        <border_width>0</border_width>
+        <bulb_border>3</bulb_border>
+        <bulb_border_color>
+          <color red="150" green="150" blue="150" />
+        </bulb_border_color>
+        <data_type>0</data_type>
+        <effect_3d>true</effect_3d>
+        <enabled>true</enabled>
+        <font>
+          <opifont.name fontName="Liberation Sans" height="15" style="0" pixels="true">Default</opifont.name>
+        </font>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <foreground_color>
+          <color name="Black" red="0" green="0" blue="0" />
+        </foreground_color>
+        <height>49</height>
+        <name>LED</name>
+        <off_color>
+          <color name="Green LED: Off" red="0" green="96" blue="0" />
+        </off_color>
+        <off_label>OFF</off_label>
+        <on_color>
+          <color name="Green LED: On" red="0" green="255" blue="0" />
+        </on_color>
+        <on_label>ON</on_label>
+        <pv_name>$(device):ISON</pv_name>
+        <pv_value />
+        <rules />
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>true</keep_wh_ratio>
+        </scale_options>
+        <scripts />
+        <show_boolean_label>true</show_boolean_label>
+        <square_led>false</square_led>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <visible>true</visible>
+        <widget_type>LED</widget_type>
+        <width>49</width>
+        <wuid>4ed2b111:168704203fe:-7f52</wuid>
+        <x>160</x>
+        <y>16</y>
       </widget>
     </widget>
   </widget>
