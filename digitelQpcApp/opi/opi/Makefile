@@ -1,6 +1,7 @@
 TOP = ../../..
 
-install: runcss.sh
+install:
+#install: runcss.sh
 
 clean:
 	rm -f runcss.sh
