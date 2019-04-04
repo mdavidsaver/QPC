@@ -3,8 +3,10 @@ data
 /bin/
 /db/
 /dbd/
+/protocol/
 doxygen
 /iocs/example
 /lib/
 *~
 /configure/*.local
+envPaths
