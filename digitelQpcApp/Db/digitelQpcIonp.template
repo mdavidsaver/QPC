@@ -46,14 +46,6 @@
 # SPT           - Set point number for this pump
 # SPLY          - Which pump supply number
 
-#record(stringin, "$(device):CONTROLLER")
-#{
-#	field(DESC, "QPC Controller")
-#	field(PINI, "YES")
-#	field(VAL, $(controller))
-#}
-
-
 ################################################################################
 # Text string on front panel
 #
@@ -492,7 +484,7 @@ record(ai, "$(device):RANGELOWER")
 #	   the controller will simply return an error.
 record(ai, "$(device):SETSPON")
     {
-	field(DESC, "Set on press for Spt$(SPT)")
+	field(DESC, "Set on press for Spt$(SPT=$(SPLY))")
 	field(DTYP, "Soft Channel")
 	field(HOPR,"1.0E-4")
 	field(LOPR,"1.0e-11")
@@ -503,7 +495,7 @@ record(ai, "$(device):SETSPON")
 
 record(ai, "$(device):SETSPOFF")
     {
-	field(DESC, "Set off press for Spt$(SPT)")
+	field(DESC, "Set off press for Spt$(SPT=$(SPLY))")
 	field(DTYP, "Soft Channel")
 	field(HOPR,"1.0E-4")
 	field(LOPR,"1.0e-11")
@@ -550,7 +542,7 @@ record(calcout,"$(device):WRITESP")
 	field(DTYP, "stream")
     field(CALC,"0")
     field(PINI, "YES")
-    field(INPA,"$(SPT)")
+    field(INPA,"$(SPT=$(SPLY))")
     field(INPB,"$(SPLY)")
     field(INPC,"$(device):SETSPON.VAL NPP NMS")
     field(INPD,"$(device):SETSPOFF.VAL NPP NMS")

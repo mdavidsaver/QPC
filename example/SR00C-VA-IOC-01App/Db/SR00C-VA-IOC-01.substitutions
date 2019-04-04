@@ -38,15 +38,15 @@
 
 file digitelQPCController.template
     {
-    pattern { QPC              , unit, port  , punits }
-            { "SR00S-VA-QPC-01", "01", "ser0", "MBAR" }
+    pattern { QPC              , unit, port   }
+            { "SR00S-VA-QPC-01", "01", "ser0" }
     }
 
 file digitelQpcIonp.template
     {
-    pattern { device             ,controller       , SPLY , SPT , SIZE  , HV    , port , unit,   spon   , spoff  }
-            { "SR00S-VA-IONP-01" ,"SR00S-VA-QPC-01", "1"  , "1" , "300" , 3000  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
-            { "SR00S-VA-IONP-02" ,"SR00S-VA-QPC-01", "2"  , "2" , "300" , 3100  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
-            { "SR00S-VA-IONP-03" ,"SR00S-VA-QPC-01", "3"  , "3" , "300" , 3200  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
-            { "SR00S-VA-IONP-04" ,"SR00S-VA-QPC-01", "4"  , "4" , "300" , 3300  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+    pattern { device             , SPLY , SIZE  , HV    , port , unit,   spon   , spoff  }
+            { "SR00S-VA-IONP-01" , "1"  , "300" , 3000  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+            { "SR00S-VA-IONP-02" , "2"  , "300" , 3100  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+            { "SR00S-VA-IONP-03" , "3"  , "300" , 3200  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
+            { "SR00S-VA-IONP-04" , "4"  , "300" , 3300  ,"ser0", "01", 1.0E-8   , 2.0E-8 }
     }

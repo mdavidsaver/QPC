@@ -1,6 +1,5 @@
 # This database is for a single QPC Controller
 #
-# SYSTEM - PV prefix or system name
 # QPC    - QPC Controller PV part name
 
 
@@ -42,7 +41,6 @@ record(mbbi,"$(QPC):PUNITS")
     field(SCAN, "Passive")
     field(PINI, "YES")
 	field(INP,"@digitelQpc.proto getPressureUnit($(unit=01)) $(port)")
-#    field(INP, "$(SYSTEM)$(PMP):SETPUNITS.VAL CP NMS")
 	field(ZRVL,"0")
 	field(ONVL,"1")
 	field(TWVL,"2")
