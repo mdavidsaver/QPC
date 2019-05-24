@@ -24,6 +24,8 @@ qpc_DBD += stream.dbd
 qpc_LIBS += stream
 qpc_LIBS += asyn
 qpc_LIBS += calc
+qpc_LIBS += sscan
+qpc_LIBS += seq pv
 
 # test_registerRecordDeviceDriver.cpp derives from test.dbd
 qpc_SRCS += qpc_registerRecordDeviceDriver.cpp
