@@ -17,7 +17,7 @@ qpc_registerRecordDeviceDriver(pdbbase)
 #asynSetOption("qpc1", -1, "clocal", "Y")
 #asynSetOption("qpc1", -1, "crtscts", "N")
 
-drvAsynIPPortConfigure("qpc1", "192.168.99.15:23", 0, 0, 0)
+drvAsynIPPortConfigure("qpc1", "192.168.1.11:23", 0, 0, 0)
 
 #asynSetTraceMask("qpc1",0,0x3f)
 #asynSetTraceIOMask("qpc1",0,2)
@@ -26,12 +26,12 @@ drvAsynIPPortConfigure("qpc1", "192.168.99.15:23", 0, 0, 0)
 #asynSetTraceIOMask("qpc1",0,2)
 
 # A controller
-dbLoadRecords("digitelQPCController.template","QPCBUS=Ethernet,QPC=TST:QPC1,port=qpc1")
+dbLoadRecords("digitelQPCController.template","QPCBUS=Ethernet,QPC=TST2:QPC1,port=qpc1")
 # 4x channels of this controller
 # TODO: autosave for HV, pump size, etc.
-dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST:CH1,port=qpc1,unit=01,SPLY=1,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
-dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST:CH2,port=qpc1,unit=02,SPLY=2,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
-dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST:CH3,port=qpc1,unit=03,SPLY=3,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
-dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST:CH4,port=qpc1,unit=04,SPLY=4,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
+dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST2:CH1,port=qpc1,unit=01,SPLY=1,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
+dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST2:CH2,port=qpc1,unit=02,SPLY=2,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
+dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST2:CH3,port=qpc1,unit=03,SPLY=3,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
+dbLoadRecords("digitelQpcIonp.template", "QPCBUS=Ethernet,device=TST2:CH4,port=qpc1,unit=04,SPLY=4,SIZE=500,HV=3000,spon=1.0E-8,spoff=2.0E-8")
 
 iocInit()
